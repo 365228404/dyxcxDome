@@ -4,7 +4,7 @@
 		<auth v-if="!gld.isAuth&&gld.organizationId" @authSuccess="authSuccess"></auth>
 		<view class="pt30 mb166">
 			<!-- 店铺头部 S -->
-			<view class="store_header">
+			<view class="store_header" v-if="gld.dYuserInfo">
 				<view class="store_image" v-if="gld.dYuserInfo.avatarUrl" @click="showToast">
 					<image class="maxBox" :src="gld.dYuserInfo.avatarUrl" mode="aspectFill"></image>
 				</view>
@@ -55,7 +55,7 @@
 		<!-- 返回顶部 -->
 		<image class='scrollTop' mode='aspectFill' v-if="floorstatus" @click='pageScrollToTop' src='../../static/image/default/icon_top.png'></image>
 		<toast v-if="toastHidden" :showToastTxt="showToastTxt"></toast>
-		<switchTabBar :tabNum="num" @cutTab="tabItemDidClick"></switchTabBar>
+		<!-- <switchTabBar :tabNum="num" @cutTab="tabItemDidClick"></switchTabBar> -->
 	</view>
 </template>
 
@@ -73,7 +73,7 @@
 		data() {
 			return {
 				num: 0,
-				isLoading: true,
+				isLoading: false,
 				toastHidden: false,
 				showToastTxt: '',
 				groupGoodsList: [],

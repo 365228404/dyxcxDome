@@ -5,7 +5,7 @@
 		<view></view>
 		
 		<toast v-if="toastHidden" :showToastTxt="showToastTxt"></toast>
-		<switchTabBar :tabNum="num" @cutTab="tabItemDidClick"></switchTabBar>
+		<!-- <switchTabBar :tabNum="num" @cutTab="tabItemDidClick"></switchTabBar> -->
 	</view>
 </template>
 

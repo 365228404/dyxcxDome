@@ -145,30 +145,30 @@
 		"navigationBarBackgroundColor": "#fff",
 		"backgroundColor": "#fff",
 		"backgroundTextStyle": "light"
+	},
+	"tabBar": {
+		"color": "#989898",
+		"selectedColor": "#333333",
+		"borderStyle": "white",
+		"backgroundColor": "#ffffff",
+		"list": [{
+				"pagePath": "pages/store/store",
+				"iconPath": "static/image/tab/icon_tab_storeActive.png",
+				"selectedIconPath": "static/image/tab/icon_tab_storeActive.png",
+				"text": "店铺"
+			},
+			{
+				"pagePath": "pages/showcase/showcase",
+				"iconPath": "static/image/tab/icon_tab_showcase.png",
+				"selectedIconPath": "static/image/tab/icon_tab_showcase.png",
+				"text": "橱窗"
+			},
+			{
+				"pagePath": "pages/mine/mine",
+				"iconPath": "static/image/tab/icon_tab_mine.png",
+				"selectedIconPath": "static/image/tab/icon_tab_mine.png",
+				"text": "个人中心"
+			}
+		]
 	}
-	// "tabBar": {
-	// 	"color": "#C0C4CC",
-	// 	"selectedColor": "#fa436a",
-	// 	"borderStyle": "black",
-	// 	"backgroundColor": "#ffffff",
-	// 	"list": [{
-	// 			"pagePath": "pages/store/store",
-	// 			"iconPath": "static/image/tab/icon_tab_xuanpin_grey.png",
-	// 			"selectedIconPath": "static/image/tab/icon_tab_xuanpin_pink.png",
-	// 			"text": "店铺"
-	// 		},
-	// 		{
-	// 			"pagePath": "pages/showcase/showcase",
-	// 			"iconPath": "static/image/tab/icon_tab_index_grey.png",
-	// 			"selectedIconPath": "static/image/tab/icon_tab_index_pink.png",
-	// 			"text": "橱窗"
-	// 		},
-	// 		{
-	// 			"pagePath": "pages/mine/mine",
-	// 			"iconPath": "static/image/tab/icon_tab_wode_grey.png",
-	// 			"selectedIconPath": "static/image/tab/icon_tab_wode_pink.png",
-	// 			"text": "个人中心"
-	// 		}
-	// 	]
-	// }
 }

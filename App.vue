@@ -70,21 +70,30 @@
 				let that = this;
 				//从后台获取sessionKey||userId||token
 				console.log(that.$options.globalData.code);
-				this.util.sendPost(that.config.ClientLoginLogin, {
-					code: that.$options.globalData.code
-				},(result)=>{
-					that.changeGld({
-						userInfo: {},
-					});
-					console.log(result);
-					typeof callback == "function" && callback();
-				},(error)=>{
-					that.changeGld({
-						userInfo: {},
-					});
-					typeof callback == "function" && callback();
+				this.util.sendPost({
+					url: that.config.ClientLoginLogin,
+					data: {
+						code: that.$options.globalData.code
+					},
+					// method: 'POST',
+					successFn(result) {
+						let userInfo = result.data || {};
+						that.changeGld({
+							userInfo: userInfo,
+							id: userInfo.id,
+							sessionKey: userInfo.sessionKey,
+							type: userInfo.type
+						});
+						console.log(result);
+						typeof callback == "function" && callback();
+					},
+					failFn(error) {
+						that.changeGld({
+							userInfo: {},
+						});
+						typeof callback == "function" && callback();
+					}
 				})
-				
 				// that.changeGld({
 				// 	userInfo: {}
 				// });

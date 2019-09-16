@@ -27,8 +27,11 @@
 							url: '../validate/validate'
 						})
 					} else {
+						// uni.switchTab({
+						// 	url: '../store/store'
+						// })
 						uni.redirectTo({
-							url: '../store/store'
+							url: '../manageAddrList/manageAddrList'
 						})
 					}
 				} else { // 跳转到小C 个人中心

@@ -113,15 +113,16 @@
 			},
 			// 获取图形验证码
 			getValidateCode() {
-				let that = this;
-				that.util.sendPostShowTost(that.config.captchaCaptchaImage, {
-					type:'char',
-					s : Math.random()
-				}, function(res) {
-					console.log('图形验证码', res);
-					// that.imgCode = res.resultData || {};
-					// that.isLoading = false;
-				});
+				this.util.sendPostShowTost({
+					url: this.config.captchaCaptchaImage,
+					data: {
+						type:'char',
+						s : Math.random()
+					},
+					successFn(res) {
+						console.log('图形验证码', res);
+					}
+				})
 			},
 			// 获取验证码
 			getVerificationCode() {

@@ -41,7 +41,7 @@
 								success(res) {
 									// console.log('授权设置页面成功打开用户信息授权',res);
 									that.changeGld({
-										userInfo: res.userInfo || {},
+										dYuserInfo: res.userInfo || {},
 										isAuth: true,
 									});
 									that.$emit('authSuccess');

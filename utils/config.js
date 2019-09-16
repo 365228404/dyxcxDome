@@ -115,7 +115,9 @@ let config = {
 	//编辑收货地址
 	ClientAddressEdit: 'ClientAddress/edit',
 	//删除默认地址
-	ClientAddressRemove: 'ClientAddress/remove'
+	ClientAddressRemove: 'ClientAddress/remove',
+	//选择城市
+	AreaManager: 'AreaManager/query',
 }
 export default config;
 // export const login = 'login';

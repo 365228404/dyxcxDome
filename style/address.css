@@ -18,7 +18,7 @@
 }
 .addr_name{
   display: inline-block;
-  width: 5em;
+  width: 6em;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

@@ -22,7 +22,6 @@ const state = {
 		isForcedUpdate: false, //有新版本时是否强制更新小程序
 		auditOid: false,
 		userInfo: null,
-		dYuserInfo: null,
 		userId: 125847,
 		organization: {},
 		organizationId: 48143,
@@ -42,13 +41,19 @@ const state = {
 		globalShoppingCartQuantity: 0,
 		// 是否需要刷新购物车列表
 		needLoadShopping: true,
-		ifRegister: false,
+		ifRegister: true,
 		// 获取分组的id，目前传1就行了
 		groupOrganizationId: 1,
 		specOneName: '颜色', // 规格 1 名称
 		specTwoName: '尺码', // 规格 2 名称
 		// 是否需要刷新店商品铺列表
 		needLoadStore: true,
+		
+		dYuserInfo: null,
+		douyinId: '',
+		id: '',
+		sessionKey: '',
+		type: ''
 	},
 	upd: { //改变前面页面栈的数据
 		areaId: '',

@@ -91,21 +91,17 @@ function getImgUrlBySize(imageUrl, size, flag){
 }
 
 // 全局请求方法（自带tost）
-function sendPostShowTost(url, data, successFn, failFn) {
-	data = data || {};
-	successFn = successFn || function() {};
-	failFn = failFn || function() {};
+function sendPostShowTost({url, data= {}, successFn = ()=>{}, failFn= ()=>{}, method = 'GET'} = {}) {
 	uni.showToast({
 		title: '请稍等片刻...',
 		icon: 'loading',
 		duration: state.gld.timeout
 	});
-	sendPost(url, data, successFn, failFn, true);
+	sendPost({url, data, successFn, failFn, method, notHiddenToast: true});
 };
 // 全局请求方法（不会显示toast）
-function sendPost(url, data, successFn, failFn, notHiddenToast) {
+function sendPost({url, data= {}, successFn = ()=>{}, failFn= ()=>{}, notHiddenToast = false, method = 'GET'} = {}) {
 	let that = this;
-	// data = data || {};
 	// // 集团ID
 	// data.groupId = 2;
 	// if (state.gld.userId && !data.userId) {
@@ -140,19 +136,25 @@ function sendPost(url, data, successFn, failFn, notHiddenToast) {
 	// 	data.timeStamp = new Date().getTime();
 	// }
 	// data = JSON.stringify(data);
+	// if (state.gld.id && !data.userid) {
+	// 	data.userid = state.gld.id;
+	// }
 	uni.request({
 		url: state.server + url,
-		// method: "POST",
+		method,
 		header: {
 			// 'content-type': 'application/x-www-form-urlencoded',
 			// 'X-AUTH-TOKEN': state.gld.token,
-			'content-type': 'application/json'
+			'content-type': 'application/json;charset=UTF-8'
 		},
 		// data: {
 		// 	'data': data
 		// },
 		data: data,
 		success (res) {
+			if (notHiddenToast) {
+				uni.hideToast();
+			}
 			if (successFn) {
 				successFn(res);
 			}
