@@ -61,24 +61,8 @@
 		},
 		onShow() {
 			if (this.upd.needRefresh) {
-				that.getWeiXinAddressList();
+				this.ClientAddressGet();
 			}
-		},
-		// 页面下拉刷新
-		onPullDownRefresh() {
-			
-		},
-		// 页面上拉触底
-		onReachBottom() {
-			
-		},
-		// 右上角分享
-		onShareAppMessage() {
-
-		},
-		// 页面滚动事件
-		onPageScroll() {
-
 		},
 		methods: {
 			...mapMutations(['changeUpd']),
@@ -120,6 +104,7 @@
 						userid: this.gld.id || 'f6a2f5e85709471e8caa74066a12a70f'
 					},
 					successFn(res) {
+						console.log(res);
 						let userAddrList = res.data || [];
 						let tmpList = [];
 						for (let item of userAddrList) {
@@ -132,21 +117,28 @@
 										tmpList.push(item);
 									};
 								} else {
-									item.select = true;
-									that.id = item.id;
-									that.changeUpd({
-										weiXinAddress: item
-									})
+									if (item.isDefault) {
+										item.select = true;
+										that.id = item.id;
+										that.changeUpd({
+											weiXinAddress: item
+										})
+									}
 									tmpList.push(item);
 								} 	
 							} else {
 								tmpList.push(item);
 							}
 						}
-						if (tmpList.length == 1) {
-							tmpList[0].select = true;
-						}
-						that.userAddrList = tmpList;
+						let tmpListASort = [];
+						tmpList.forEach(item=>{
+							if (item.isDefault) {
+								tmpListASort.unshift(item);
+							} else {
+								tmpListASort.push(item);
+							}
+						})
+						that.userAddrList = tmpListASort;
 					}
 				})
 			}

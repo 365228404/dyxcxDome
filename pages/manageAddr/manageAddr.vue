@@ -1,6 +1,5 @@
 <template><!-- 新增或者编辑地址 （记得把@input改成v-model） -->
 	<view>
-		<loading v-if="isLoading"></loading>
 		<view>
 			<!-- 地址信息 S -->
 			<view class="page_footer_pd">
@@ -14,7 +13,7 @@
 			  </view>
 			  <view class='wg_form_item' @click="onCity">
 			    <view class='wg_form_item_label'>地区</view>
-			    <view class='wg_input'>{{area}}</view>
+			    <view class='wg_input'>{{area? area: areaPlaceholder}}</view>
 			  </view>
 			  <view class='wg_form_item wg_form_item_textarea'>
 			    <view class='wg_form_item_label'>详细地址</view>
@@ -22,20 +21,34 @@
 			      <textarea @input="addrBindinput" class='maxBox' :value="address" placeholder="街道地址" placeholder-class="wg_placeholder"></textarea>
 			    </view>
 			  </view>
-			  <view class='wg_form_item bb0'>
+			  <view class='wg_form_item bb0' v-if="!(isShopCart||hideDefault)">
 			    <view class='wg_form_item_label'>设置默认地址</view>
 			    <view class='wg_input tr'>
 			      <switch :checked="isDefault?true:false" @change="switchSet" />
 			    </view>
 			  </view>
-			  <view class='wg_form_item mt20 bb0'>
-			    <view class='wg_form_item_label themeC' @click='ClientAddressRemove'>删除地址</view>
+			  <view class='wg_form_item mt20 bb0' v-if="!(isAdd||addrLength<=1||isShopCart)">
+			    <view class='wg_form_item_label themeC' @click='showDeleteDialog'>删除地址</view>
 			  </view>
 			</view>
 			<!-- 地址信息 E -->
 		</view>
 		<view class='page_footer bg_grey5'>
 		  <view class='page_footer_btn bg_theme' @click.stop="keepTap">保存</view>
+		</view>
+		<!-- 删除弹框  -->
+		<view :class="[isDeleteDialog ? 'js_dialog' : '' ]">
+		  <view class="dialog_mask" />
+		  <view class="dialog_container" @click.stop='hideDeleteDialog'>
+		    <view class="dialog_content" @click.stop='emptyEvent'>
+		      <view class="dialog_title">提示</view>
+		      <view class='fz14 c_grey2'>确认删除这个收货地址？</view>
+		      <view class='dialog_footer'>
+		        <button class='dialog_btn bg_theme' @click.stop='ClientAddressRemove'>确定</button>
+		        <button class='cancal_btn' @click.stop='hideDeleteDialog'>取消</button>
+		      </view>
+		    </view>
+		  </view>
 		</view>
 		<toast v-if="toastHidden" :showToastTxt="showToastTxt"></toast>
 	</view>
@@ -46,23 +59,25 @@
 	
 	export default {
 		computed:{
-			...mapState(['gld', 'server', 'config', 'upd'])
+			...mapState(['gld', 'config', 'upd'])
 		},
 		data() {
 			return {
-				isLoading: false,
 				toastHidden: false,
 				showToastTxt: '',
+				areaPlaceholder: '请选择地区',
 				id: '',
 				name: '',
 				phone: '',
-				area: '请选择地区', // 地区
+				area: '', // 地区
 				address: '', // 收货地址
 				isDefault: '',
 				addrLength: 0,
 				hideDefault: true,
 				areaId: '',
 				isAdd: false,
+				isDeleteDialog: false,
+				isShopCart: false,
 				// addressObj: {}, //地址列表传过来的地址对象数据
 			}
 		},
@@ -71,25 +86,34 @@
 				this.addrLength = options.addrLength;
 			}
 			if (options.isAdd) {//添加地址
-				this.isAdd = options.isAdd;
-				this.isDefault = 0;
-				this.hideDefault = false;
 				uni.setNavigationBarTitle({
 					title: '添加地址',
 				})
+				this.isAdd = options.isAdd;
+				this.isDefault = 0;
+				this.hideDefault = false;
 			} else {
+				uni.setNavigationBarTitle({
+					title: '编辑地址',
+				});
 				let addressObj = this.upd.addressObj;
+				this.changeUpd({
+					addressObj: ''
+				});
 				this.id = addressObj.id;
 				this.name = addressObj.name;
 				this.phone = addressObj.phone;
 				this.area = addressObj.area;
 				this.address = addressObj.address;
-				this.changeUpd({
-					addressObj: ''
-				});
-				uni.setNavigationBarTitle({
-					title: '编辑地址',
-				});
+				this.isDefault = addressObj.isDefault;
+				if (options.isShopCart) {
+					this.isShopCart = options.isShopCart;
+				}
+				if (addressObj.isDefault) {
+					this.hideDefault = true;
+				} else {
+					this.hideDefault = false;
+				}
 			}
 		},
 		onShow() {
@@ -101,22 +125,6 @@
 					areaName: '',
 				})
 			}
-		},
-		// 页面下拉刷新
-		onPullDownRefresh() {
-			
-		},
-		// 页面上拉触底
-		onReachBottom() {
-			
-		},
-		// 右上角分享
-		onShareAppMessage() {
-
-		},
-		// 页面滚动事件
-		onPageScroll() {
-
 		},
 		methods: {
 			...mapMutations(['changeUpd']),
@@ -156,10 +164,8 @@
 			},
 			// 新增&编辑 保存地址
 			keepTap() {
+				let that = this;
 				let param = {};
-				if(this.addrLength == 0){//如果没有地址，设置为默认
-					param.isDefault = 1
-				}
 				if (!this.name || this.name.length < 2) {
 					this.util.showToast(this, '请填写收货人姓名！',null,2000);
 					return;
@@ -175,7 +181,7 @@
 					this.util.showToast(this, '手机号码格式不正确', null, 2000);
 					return;
 				}
-				if (!this.areaId) {
+				if (!this.area) {
 					this.util.showToast(this, '请选择地区', null, 2000);
 					return;
 				}
@@ -192,12 +198,15 @@
 				param.area = this.area;
 				param.address = this.address;
 				param.userId = this.gld.id;
-				param.id = '557bda559d804a419fbcdcc7e37e1b1f';
-				
+				param.isDefault = this.isDefault;
+				if(this.addrLength == 0){//如果没有地址，设置为默认
+					param.isDefault = 1
+				}
 				let url = '';
-				if (!this.isAdd) {
+				if (this.isAdd) {
 					url = this.config.ClientAddressAdd;
 				} else {
+					param.id = this.id;
 					url = this.config.ClientAddressEdit;
 				}
 				this.util.sendPostShowTost({
@@ -205,21 +214,45 @@
 					method: 'POST',
 					data: JSON.stringify(param),
 					successFn(res) {
-						
+						that.changeUpd({
+							weiXinAddress: param,
+							needRefresh: true
+						})
+						uni.navigateBack();
 					}
 				})
 			},
+			// 弹起删除弹框
+			showDeleteDialog() {
+				if (this.addrLength == 1) {
+					this.util.showToast(this, '至少保留一个地址');
+					return
+				}
+				this.isDeleteDialog = true;
+			},
+			// 收起弹框
+			hideDeleteDialog() {
+				this.isDeleteDialog = false;
+			},
 			// 删除收货地址
 			ClientAddressRemove() {
+				let that = this;
+				this.isDeleteDialog = false;
+				let param = {
+					ids: this.id
+				}
 				this.util.sendPostShowTost({
 					url: this.config.ClientAddressRemove,
 					method: 'POST',
-					data: {
-						userId: this.gld.id,
-						id: '557bda559d804a419fbcdcc7e37e1b1f'
-					},
+					data: param,
 					successFn(res) {
-						
+						console.log(res);
+						that.util.showToast(that, '删除成功', ()=>{
+							that.changeUpd({
+								needRefresh: true
+							});
+							uni.navigateBack();
+						})
 					}
 				})
 			}

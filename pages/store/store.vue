@@ -2,10 +2,10 @@
 	<view id="store_page">
 		<loading v-if="isLoading"></loading>
 		<auth v-if="!gld.isAuth&&gld.organizationId" @authSuccess="authSuccess"></auth>
-		<view class="pt30 mb166">
+		<view class="pt30">
 			<!-- 店铺头部 S -->
 			<view class="store_header" v-if="gld.dYuserInfo">
-				<view class="store_image" v-if="gld.dYuserInfo.avatarUrl" @click="showToast">
+				<view class="store_image" v-if="gld.dYuserInfo.avatarUrl">
 					<image class="maxBox" :src="gld.dYuserInfo.avatarUrl" mode="aspectFill"></image>
 				</view>
 				<view class="store_describe">
@@ -73,14 +73,14 @@
 		data() {
 			return {
 				num: 0,
-				isLoading: false,
+				isLoading: true,
 				toastHidden: false,
 				showToastTxt: '',
 				groupGoodsList: [],
 				isLoad: false,
 				hasMoreData: false,
 				length: 10,
-				goodsGroupId: 17467,
+				goodsGroupId: 18039,
 				floorstatus: false,
 			}
 		},
@@ -119,16 +119,13 @@
 			}
 		},
 		methods: {
-			showToast() {
-				this.util.showToast(this,'显示Toast');
-			},
 			getData() {
 				this.getGroupGoodsList();
 			},
 			getGroupGoodsList(onPullDown) {
 				let that = this;
 				let startIndex = onPullDown ? 0 : that.groupGoodsList.length;
-				that.util.sendPost(that.config.getNewOranizationStoreGoodsList, {
+				that.util.sendPostWX(that.config.getNewOranizationStoreGoodsList, {
 					goodsGroupId: that.goodsGroupId,
 					length: that.length,
 					startIndex: startIndex,
@@ -159,6 +156,11 @@
 				}, function() {
 					uni.stopPullDownRefresh();
 				});
+			},
+			goodsDetail(item) {
+				uni.navigateTo({
+					url: '../goodsDetail/goodsDetail?goodsGroupId=' + this.goodsGroupId + '&goodsSpecId=' + item.goodsSpecId
+				})
 			},
 			pageScrollToTop() {
 				if (uni.createSelectorQuery()) {
@@ -281,7 +283,7 @@
 	.goods_footer .goods_price {
 	  flex: 1;
 	  display: flex;
-	  align-items: baseline;
+	  align-items: center;
 	}
 	.sales_box {
 	  display: inline-block;

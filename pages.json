@@ -149,7 +149,7 @@
 	"tabBar": {
 		"color": "#989898",
 		"selectedColor": "#333333",
-		"borderStyle": "white",
+		"borderStyle": "black",
 		"backgroundColor": "#ffffff",
 		"list": [{
 				"pagePath": "pages/store/store",

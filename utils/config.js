@@ -108,16 +108,32 @@ let config = {
 	ClientLoginLogin: 'ClientLogin/login',
 	//小B注册->图形验证码
 	captchaCaptchaImage: '/captcha/captchaImage',
+	//短信验证码
+	ClientLoginSend: 'ClientLogin/send',
+	
 	// 获取收货地址
 	ClientAddressGet: 'ClientAddress/get',
 	//增加收货地址
 	ClientAddressAdd: 'ClientAddress/add',
 	//编辑收货地址
 	ClientAddressEdit: 'ClientAddress/edit',
-	//删除默认地址
+	//删除地址
 	ClientAddressRemove: 'ClientAddress/remove',
 	//选择城市
 	AreaManager: 'AreaManager/query',
+	
+	//行业分类
+	IndustryCategoryMangerGet: 'IndustryCategoryManger/get',  // fid=0,   0返回一级， 后面传入用户选择的一级ID就可以返回二级。
+	//商品分类
+	StoreCategoryManagerGet: 'StoreCategoryManager/get', // fid=0, 0返回一级， 后面传入用户选择的一级ID就可以返回二级。
+	//店铺 增删查改 get?uid=xxx  uid是用户ID，除了查看是GET方式， 其他是POST方式提交Store对象
+	StoreManagerGet: 'StoreManager/get',
+	StoreManagerRemove: 'StoreManager/remove',
+	StoreManagerEdit: 'StoreManager/edit',
+	StoreManagerAdd: 'StoreManager/add',
+	
+	//商家注册接口
+	ClientLoginRegister: 'ClientLogin/register',
 }
 export default config;
 // export const login = 'login';

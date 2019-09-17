@@ -8,8 +8,8 @@ const state = {
 	// server: 'https://dev.yunhuotong.net/yhtplus/',
 	// imgServer: 'https://dev.yunhuotong.net/yhtplus/',
 	// 正式服务器
-	// server: 'https://yhtplus.yunhuotong.net/yhtplus/',
-	// imgServer: 'https://image.yunhuotong.net/yhtplus/',
+	WXserver: 'https://yhtplus.yunhuotong.net/yhtplus/',
+	imgServer: 'https://image.yunhuotong.net/yhtplus/',
 	
 	server: 'http://nas.eamon.top:18080/',
 	config: config, // 接口API
@@ -30,7 +30,7 @@ const state = {
 		isOnRegistered: false,
 		fromOId: 48143, // 店铺ID(暂时先用模拟的)
 		groupId: 2,
-		token: 'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIxMjU4NDciLCJzdWIiOiIxNTgxNDk3OTM3NiIsImlhdCI6MTU2ODI1Nzg0MH0.SGoJfUWquFKzyQJNhsUHN_HL3jIQNqbwEPTFQXVNQUA',
+		token: 'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIxMjU4NDciLCJzdWIiOiIxNTgxNDk3OTM3NiIsImlhdCI6MTU2ODcyNjkwN30.G-5YOhs31rTeIVmuq4CzkSmZarAbOO5qtNPiAhynnN4',
 		// 是否是测试模式(上正式时记得注释或者改为false)
 		isTest: false,
 		testUserId: 1094680, //测试的用户
@@ -48,12 +48,13 @@ const state = {
 		specTwoName: '尺码', // 规格 2 名称
 		// 是否需要刷新店商品铺列表
 		needLoadStore: true,
+		wxRequest: true,
 		
 		dYuserInfo: null,
 		douyinId: '',
 		id: '',
 		sessionKey: '',
-		type: ''
+		type: true
 	},
 	upd: { //改变前面页面栈的数据
 		areaId: '',

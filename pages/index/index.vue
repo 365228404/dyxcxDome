@@ -21,17 +21,14 @@
 		},
 		methods:{
 			goPages() {
-				if (this.gld.organizationId) { // 如果是店主
+				if (this.gld.type) { // 如果是店主
 					if (!this.gld.ifRegister) { // 如果未注册就去注册页面
 						uni.redirectTo({
 							url: '../validate/validate'
 						})
 					} else {
-						// uni.switchTab({
-						// 	url: '../store/store'
-						// })
-						uni.redirectTo({
-							url: '../manageAddrList/manageAddrList'
+						uni.switchTab({
+							url: '../store/store'
 						})
 					}
 				} else { // 跳转到小C 个人中心

@@ -1,7 +1,7 @@
 <template>
 	<!-- 小B店主注册页面 -->
 	<view>
-		<auth @authSuccess="authSuccess" v-if="!gld.isAuth&&gld.organizationId"></auth>
+		<auth @authSuccess="authSuccess" v-if="!gld.isAuth"></auth>
 		<loading v-if="isLoading"></loading>
 		<view class='big_box'>
 			<!-- 头部 S -->
@@ -16,7 +16,7 @@
 					<view class='title'>手机号</view>
 				</view>
 				<view class='mt10'>
-					<input class='input_info' type="number" maxlength="11" v-model="mobile" placeholder='请填写你的手机号码' placeholder-class="wg_placeholder"></input>
+					<input class='input_info' type="number" maxlength="11" @input="bindMobile" :value="mobile" placeholder='请填写你的手机号码' placeholder-class="wg_placeholder"></input>
 				</view>
 			</view>
 			<view class='info_box ovh'>
@@ -25,9 +25,9 @@
 					<view class='title'>图形验证码</view>
 				</view>
 				<view class='mt10'>
-					<input class='input_code dib' type="number" maxlength="8" v-model="numberCode" placeholder='请填写图形验证码'
+					<input class='input_code dib' type="number" maxlength="8" @input="bindImgCode" :value="numberCode" placeholder='请填写图形验证码'
 					 placeholder-class="wg_placeholder"></input>
-					<image class='verification_code dib ml20' v-if="imgCode.imgUrl" @click='getValidateCode' :src="imgCode.imgUrl | getImgUrlBySize('',1)"></image>
+					<image class='verification_code dib ml20' v-if="imgCodeShow" @click='getValidateCode' src="http://nas.eamon.top:18080/captcha/captchaImage?type=char"></image>
 				</view>
 			</view>
 			<view class='info_box ovh'>
@@ -36,7 +36,7 @@
 					<view class='title'>手机短信验证码</view>
 				</view>
 				<view class='mt10'>
-					<input class='input_code bg_grey5 dib' type="number" maxlength="8" v-model="verificationCode" placeholder='请填写短信验证码'
+					<input class='input_code bg_grey5 dib' type="number" maxlength="8" @input="bindCode" :value="verificationCode" placeholder='请填写短信验证码'
 					 placeholder-class="wg_placeholder"></input>
 					<view class='verification_code dib ml20' @click='getVerificationCode'>
 						{{codeStatus}}
@@ -49,7 +49,7 @@
 					<view class='title'>邀请码</view>
 				</view>
 				<view class='mt10'>
-					<input class='input_info' type="number" maxlength="8" v-model="invitationCode" placeholder='请填写邀请码'
+					<input class='input_info' type="number" maxlength="8" @input="bindInvitationCode" :value="invitationCode" placeholder='请填写邀请码'
 					 placeholder-class="wg_placeholder"></input>
 				</view>
 			</view>
@@ -85,8 +85,8 @@
 				codeStatus: "获取验证码",
 				countDown: 60,
 				// 图形验证码对象
-				imgCode: {},
-				isLoading: true,
+				imgCodeShow: true,
+				isLoading: false,
 				isJoin: false,
 				channel: '斗米兼职',
 				timeStamp: new Date().getTime()
@@ -109,25 +109,28 @@
 				this.getData(this.options);
 			},
 			getData() {
-				this.getValidateCode();
+				// this.getValidateCode();
 			},
 			// 获取图形验证码
 			getValidateCode() {
-				this.util.sendPostShowTost({
-					url: this.config.captchaCaptchaImage,
-					data: {
-						type:'char',
-						s : Math.random()
-					},
-					successFn(res) {
-						console.log('图形验证码', res);
-					}
-				})
+				this.imgCodeShow = false;
+				setTimeout(()=>{
+					this.imgCodeShow = true;
+				},0)
+				// this.util.sendPostShowTost({
+				// 	url: this.config.captchaCaptchaImage,
+				// 	data: {
+				// 		type:'char',
+				// 		s : Math.random()
+				// 	},
+				// 	successFn(res) {
+				// 		console.log('图形验证码', res);
+				// 	}
+				// })
 			},
 			// 获取验证码
 			getVerificationCode() {
 				let that = this;
-				that.imgCode = that.imgCode || {};
 				setTimeout(function() {
 					if (that.countDown < 60) {
 						return;
@@ -143,27 +146,29 @@
 						that.util.showToast(that, "请输入图形验证码")
 						return;
 					}
-					that.util.sendPostShowTost(that.config.sendVerifyCodeByMP, {
-						phoneMob: that.mobile,
-						verifyType: 5,
-						numberCode: that.numberCode,
-						imgCodeId: that.imgCode.imgCodeId
-					}, function(res) {
-						that.util.showToast(that, "验证码已发送");
-						setTimeout(function() {
-							that.countdown();
-						}, 1000);
-					}, function(res) {
-						if (res.data.resultMsg) {
-							// that.util.showToast(that, res.data.resultMsg, function () {
-							// 	
-							// });
+					that.util.sendPostShowTost({
+						url: that.config.ClientLoginSend,
+						method: 'POST',
+						data: JSON.stringify({
+							phone: that.mobile,
+							code: that.numberCode
+						}),
+						successFn(res) {
+							that.util.showToast(that, "验证码已发送");
+							setTimeout(function() {
+								that.countdown();
+							}, 1000);
+						},
+						failFn(error) {
 							//重新获取图形验证码
-							setTimeout(() => {
-								that.getValidateCode();
-							}, 1500)
+							if (error) {
+								that.imgCodeShow = false;
+								setTimeout(()=>{
+									that.imgCodeShow = true;
+								},0)
+							}
 						}
-					});
+					})
 				}, 300);
 			},
 			// 60秒倒计时
@@ -181,53 +186,6 @@
 						}, 1000);
 					}
 				};
-			},
-			// 校验验证码
-			checkVerifyCode(callBack) {
-				let that = this;
-				// that.util.sendPostShowTost(that.config.checkVerifyCode, {
-				// 	phoneMob: that.mobile,
-				// 	verifyType: 5,
-				// 	code: that.verificationCode
-				// }, function (res) {
-				// 	if (callBack) {
-				// 		callBack();
-				// 	}
-				// });
-				this.checkInvitationCode(function() {
-					that.util.sendPostShowTost(that.config.checkVerifyCode, {
-						phoneMob: that.mobile,
-						verifyType: 5,
-						code: that.verificationCode
-					}, function(res) {
-						if (callBack) {
-							callBack();
-						}
-					});
-				})
-			},
-			// 校验邀请码 (如果后端校验更佳)
-			checkInvitationCode(callback) {
-				let that = this;
-				let param = {
-					length: 9999,
-					startIndex: 0,
-					status: 2 // 未使用的邀请码
-				};
-				that.app.sendPost(that.config.getExtractList, {
-					param
-				}, function(res) {
-					let inviteCodeList = res.resultData.inviteCodeList || [];
-					let isHaveInvitationCode = inviteCodeList.some(item => item.inviteCode == that.invitationCode);
-					if (isHaveInvitationCode) {
-						if (callBack) {
-							callBack();
-						}
-					} else {
-						that.util.showToast(that, '邀请码无效');
-					}
-
-				});
 			},
 			// 号码
 			bindMobile(e) {
@@ -247,75 +205,53 @@
 			//升级会员
 			keepTap(e) {
 				let that = this;
-				//更新用户表单
-				// app.updateUserForm({
-				// 	formId: e.detail.formId
-				// });
-				let addrObj = {};
-				addrObj.groupId = that.gld.groupId;
-				addrObj.organizationName = that.consignee || '';
-				addrObj.phone = that.mobile || '';
-				addrObj.verificationCode = that.verificationCode || '';
-				addrObj.numberCode = that.numberCode || '';
-				addrObj.imgCodeId = that.imgCode.imgCodeId || '';
-				// addrObj.invitationCode = that.invitationCode || ''; //邀请码
-				if (!addrObj.phone) {
-					that.util.showToast(that, "手机号码不能为空");
+				if (!this.mobile) {
+					this.util.showToast(this, "手机号码不能为空");
 					return false;
 				}
-				if (!/^1\d{10}$/.test(addrObj.phone)) {
-					that.util.showToast(that, "手机号码格式不正确")
+				if (!/^1\d{10}$/.test(this.mobile)) {
+					this.util.showToast(this, "手机号码格式不正确")
 					return false;
 				}
-				if (!addrObj.numberCode.length) {
-					that.util.showToast(that, "请输入图形验证码");
+				if (!this.numberCode.length) {
+					this.util.showToast(this, "请输入图形验证码");
 					return false;
 				}
-				if (!addrObj.verificationCode.length) {
-					that.util.showToast(that, "请输入短信验证码~");
+				if (!this.verificationCode.length) {
+					this.util.showToast(this, "请输入短信验证码~");
 					return false;
 				}
-				if (!addrObj.invitationCode.length) {
-					that.util.showToast(that, "请输入邀请码~");
-					return false;
-				}
-				if (that.isJoin) {
-					that.util.showToast(that, '请不要重复操作');
+				// if (!addrObj.invitationCode.length) {
+				// 	this.util.showToast(this, "请输入邀请码~");
+				// 	return false;
+				// }
+				if (this.isJoin) {
+					this.util.showToast(this, '请不要重复操作');
 					return
 				} else {
-					that.isJoin = true;
+					this.isJoin = true;
 				};
-				let param = addrObj;
-				param.timeStamp = that.timeStamp;
-				param.channel = that.channel;
-				param.fatherId = 7;
-				that.checkVerifyCode(function() {
-					//注册店主
-					that.util.sendPostShowTost(that.config.bindingUserOrganizationNew, param, function(res) {
-						that.changeGld({
-							organizationState: 1,
-							isOnRegistered: false
-						})
-						that.util.showToast(that, '注册成功', function() {
-							// app.getUserInfoByUserId(function () {
-							// 	if (that.gld.organizationId && that.gld.organizationState == 1) { //B端
-							// 		wx.switchTab({
-							// 			url: '../store/store',
-							// 		})
-							// 	}
-							// });
-						}, 1800);
-					}, function(res) {
-						if (res.data.resultCode != 349) {
-							that.isJoin = false;
-							that.timeStamp = new Date().getTime();
-						} else {
-							if (res.data.resultMsg) {
-								that.util.showToast(that, res.data.resultMsg);
+				// that.isJoin = false;
+				// that.timeStamp = new Date().getTime();
+				uni.login({
+					success(res) {
+						that.util.sendPostShowTost({
+							url: that.config.ClientLoginRegister,
+							method: 'POST',
+							data: JSON.stringify({
+								phone: that.mobile,
+								ncode: that.verificationCode,
+								code: res.code
+							}),
+							successFn(res) {
+								this.isJoin = false;
+							},
+							failFn(error) {
+								this.isJoin = false;
 							}
-						};
-					});
-				})
+						})
+					}
+				});
 			}
 		}
 	}

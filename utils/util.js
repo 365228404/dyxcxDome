@@ -5,7 +5,7 @@ let state = store.state;
 
 //Toast
 function showToast(that, txt, callback, time) {
-  time = Number(time) || 800;
+  time = Number(time) || 1000;
   if (typeof txt != 'string' || !txt) return;
 	that.showToastTxt = txt;
 	that.toastHidden = true;
@@ -102,61 +102,27 @@ function sendPostShowTost({url, data= {}, successFn = ()=>{}, failFn= ()=>{}, me
 // 全局请求方法（不会显示toast）
 function sendPost({url, data= {}, successFn = ()=>{}, failFn= ()=>{}, notHiddenToast = false, method = 'GET'} = {}) {
 	let that = this;
-	// // 集团ID
-	// data.groupId = 2;
-	// if (state.gld.userId && !data.userId) {
-	// 	data.userId = state.gld.userId;
-	// }
-	// if (!data.organizationId) {
-	// 	if (typeof(state.gld.organizationId) != "undefined" && state.gld.organizationId) {
-	// 		data.organizationId = state.gld.organizationId;
-	// 	}
-	// }
-	// if (state.gld.isTest) {
-	// 	//测试
-	// 	data.userId = state.gld.testUserId;
-	// 	if (!data.targetOrganizationId) {
-	// 		data.organizationId = state.gld.testOrganizationId;
-	// 	}
-	// 	if (url.indexOf('loginByWechat') > -1) {
-	// 		data.loginUserId = state.gld.testUserId
-	// 	}
-	// }
-	// if (state.gld.isAudit) { //如果审核中
-	// 	data.organizationId = state.gld.auditOid;
-	// }
-	// // 排序，默认传1就行了
-	// if (data.sortField == null) {
-	// 	data.sortField = 1;
-	// }
-	// // 版本号，每个新版本加1
-	// data.versionCode = state.gld.versionCode;
-	// // 每个页面请求接口的唯一标识
-	// if (!data.timeStamp) {
-	// 	data.timeStamp = new Date().getTime();
-	// }
-	// data = JSON.stringify(data);
-	// if (state.gld.id && !data.userid) {
-	// 	data.userid = state.gld.id;
-	// }
 	uni.request({
 		url: state.server + url,
 		method,
 		header: {
-			// 'content-type': 'application/x-www-form-urlencoded',
-			// 'X-AUTH-TOKEN': state.gld.token,
 			'content-type': 'application/json;charset=UTF-8'
 		},
-		// data: {
-		// 	'data': data
-		// },
 		data: data,
 		success (res) {
 			if (notHiddenToast) {
 				uni.hideToast();
 			}
 			if (successFn) {
-				successFn(res);
+				if (res.data.code == 1) {
+					uni.showToast({
+						title: res.data.msg,
+						icon: 'loading',
+						duration: 2000
+					})
+				} else {
+					successFn(res);
+				}
 			}
 			console.log(`request调用成功 ${res}`);
 		},
@@ -166,114 +132,6 @@ function sendPost({url, data= {}, successFn = ()=>{}, failFn= ()=>{}, notHiddenT
 			}
 			console.log(`request调用失败`);
 		}
-	// 	success: function(res) {
-	// 		if (notHiddenToast) {
-	// 			uni.hideToast();
-	// 		}
-	// 		if (res.statusCode == 200) {
-	// 			if (!res.data) {
-	// 				res.data = {}
-	// 			}
-	// 			if (res.data.resultCode == 0) {
-	// 				if (successFn) {
-	// 					successFn(res.data);
-	// 				}
-	// 			} else {
-	// 				if (failFn) { //响应失败
-	// 					failFn(res)
-	// 				}
-	// 				switch (res.data.resultCode) {
-	// 					case 420: //今日已弹窗
-	// 						if (successFn) {
-	// 							successFn(res.data);
-	// 						}
-	// 						break;
-	// 					case 421: //弹窗未开启
-	// 						if (successFn) {
-	// 							successFn(res.data);
-	// 						}
-	// 						break;
-	// 					case 426: //活动不存在
-	// 						if (successFn) {
-	// 							successFn(res.data);
-	// 						}
-	// 						break;
-	// 					case 434: //优惠券已领完
-	// 						if (successFn) {
-	// 							successFn(res.data);
-	// 						}
-	// 						break;
-	// 					case 446: //微信步数活动队伍不存在
-	// 						if (successFn) {
-	// 							successFn(res.data);
-	// 						}
-	// 						break;
-	// 					case 448: //微信步数活动队伍已满员
-	// 						if (successFn) {
-	// 							successFn(res.data);
-	// 						}
-	// 						break;
-	// 					case 449: //参与的微信步数活动次数超过当天最大值
-	// 						if (successFn) {
-	// 							successFn(res.data);
-	// 						}
-	// 						break;
-	// 					case 524: //互助计划活动不存在!
-	// 						if (successFn) {
-	// 							successFn(res.data);
-	// 						}
-	// 						break;
-	// 					case 544: //openGId为空!
-	// 						if (successFn) {
-	// 							successFn(res.data);
-	// 						}
-	// 						break;
-	// 					case -7: //店铺未在该直播活动范围内或者还未有活动开始的记录
-	// 						if (successFn) {
-	// 							successFn(res.data);
-	// 						}
-	// 						break;
-	// 					default:
-	// 						let msg = res.data.resultMsg;
-	// 						if (msg) {
-	// 							uni.showToast({
-	// 								title: msg,
-	// 								icon: 'none',
-	// 								duration: 2000
-	// 							});
-	// 						}
-	// 						break;
-	// 				}
-	// 			};
-	// 		} else { //请求状态不是200
-	// 			if (!res) {
-	// 				res = {}
-	// 			}
-	// 			if (!res.data) {
-	// 				res.data = {}
-	// 			}
-	// 			if (failFn) { //响应失败
-	// 				failFn(res)
-	// 			}
-	// 		};
-	// 	},
-	// 	fail: function(res) {
-	// 		if (!res) {
-	// 			res = {}
-	// 		}
-	// 		if (!res.data) {
-	// 			res.data = {}
-	// 		}
-	// 		if (notHiddenToast) {
-	// 			uni.showToast({
-	// 				title: '网络不给力，刷新试试',
-	// 				icon: 'none'
-	// 			});
-	// 		}
-	// 		if (failFn) {
-	// 			failFn(res)
-	// 		}
-	// 	}
 	})
 };
 
@@ -561,6 +419,165 @@ function yuntongPayWebNotifyUrl(result, transactionState, callBack) {
 	});
 };
 
+// 全局请求方法（不会显示toast） (微信小程序的请求方法)
+function sendPostWX(url, data, successFn, failFn, notHiddenToast) {
+	let that = this;
+	data = data || {};
+	// 集团ID
+	data.groupId = 2;
+	if (state.gld.userId && !data.userId) {
+		data.userId = state.gld.userId;
+	}
+	if (!data.organizationId) {
+		if (typeof(state.gld.organizationId) != "undefined" && state.gld.organizationId) {
+			data.organizationId = state.gld.organizationId;
+		}
+	}
+	if (state.gld.isTest) {
+		//测试
+		data.userId = state.gld.testUserId;
+		if (!data.targetOrganizationId) {
+			data.organizationId = state.gld.testOrganizationId;
+		}
+		if (url.indexOf('loginByWechat') > -1) {
+			data.loginUserId = state.gld.testUserId
+		}
+	}
+	if (state.gld.isAudit) { //如果审核中
+		data.organizationId = state.gld.auditOid;
+	}
+	// 排序，默认传1就行了
+	if (data.sortField == null) {
+		data.sortField = 1;
+	}
+	// 版本号，每个新版本加1
+	data.versionCode = state.gld.versionCode;
+	// 每个页面请求接口的唯一标识
+	if (!data.timeStamp) {
+		data.timeStamp = new Date().getTime();
+	}
+	data = JSON.stringify(data);
+	uni.request({
+		url: state.WXserver + url,
+		method: "POST",
+		header: {
+			'content-type': 'application/x-www-form-urlencoded',
+			'X-AUTH-TOKEN': state.gld.token
+		},
+		data: {
+			'data': data
+		},
+		success: function(res) {
+			if (notHiddenToast) {
+				uni.hideToast();
+			}
+			if (res.statusCode == 200) {
+				if (!res.data) {
+					res.data = {}
+				}
+				if (res.data.resultCode == 0) {
+					if (successFn) {
+						successFn(res.data);
+					}
+				} else {
+					if (failFn) { //响应失败
+						failFn(res)
+					}
+					switch (res.data.resultCode) {
+						case 420: //今日已弹窗
+							if (successFn) {
+								successFn(res.data);
+							}
+							break;
+						case 421: //弹窗未开启
+							if (successFn) {
+								successFn(res.data);
+							}
+							break;
+						case 426: //活动不存在
+							if (successFn) {
+								successFn(res.data);
+							}
+							break;
+						case 434: //优惠券已领完
+							if (successFn) {
+								successFn(res.data);
+							}
+							break;
+						case 446: //微信步数活动队伍不存在
+							if (successFn) {
+								successFn(res.data);
+							}
+							break;
+						case 448: //微信步数活动队伍已满员
+							if (successFn) {
+								successFn(res.data);
+							}
+							break;
+						case 449: //参与的微信步数活动次数超过当天最大值
+							if (successFn) {
+								successFn(res.data);
+							}
+							break;
+						case 524: //互助计划活动不存在!
+							if (successFn) {
+								successFn(res.data);
+							}
+							break;
+						case 544: //openGId为空!
+							if (successFn) {
+								successFn(res.data);
+							}
+							break;
+						case -7: //店铺未在该直播活动范围内或者还未有活动开始的记录
+							if (successFn) {
+								successFn(res.data);
+							}
+							break;
+						default:
+							let msg = res.data.resultMsg;
+							if (msg) {
+								uni.showToast({
+									title: msg,
+									icon: 'none',
+									duration: 2000
+								});
+							}
+							break;
+					}
+				};
+			} else { //请求状态不是200
+				if (!res) {
+					res = {}
+				}
+				if (!res.data) {
+					res.data = {}
+				}
+				if (failFn) { //响应失败
+					failFn(res)
+				}
+			};
+		},
+		fail: function(res) {
+			if (!res) {
+				res = {}
+			}
+			if (!res.data) {
+				res.data = {}
+			}
+			if (notHiddenToast) {
+				uni.showToast({
+					title: '网络不给力，刷新试试',
+					icon: 'none'
+				});
+			}
+			if (failFn) {
+				failFn(res)
+			}
+		}
+	})
+};
+
 Vue.prototype.util = {
 	formatTime,
 	showToast,
@@ -577,5 +594,6 @@ Vue.prototype.util = {
 	addPurchaseWouldGoodsReCord,
 	getQueryStringArgs,
 	getUserInfoByUserId,
-	yuntongPayWebNotifyUrl
+	yuntongPayWebNotifyUrl,
+	sendPostWX
 };
