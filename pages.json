@@ -3,8 +3,7 @@
 		{
 			"path": "pages/index/index",
 			"style": {
-				"navigationBarTitleText": "十二星选",
-				"enablePullDownRefresh": true
+				"navigationBarTitleText": "十二星选"
 			}
 		},
 		{
@@ -92,7 +91,8 @@
 		{
 			"path" : "pages/goodsDetail/goodsDetail",
 			"style" : {
-				"navigationBarTitleText": "商品详情"
+				"navigationBarTitleText": "商品详情",
+				"enablePullDownRefresh": true
 			}
 		},
 		{
@@ -153,20 +153,20 @@
 		"backgroundColor": "#ffffff",
 		"list": [{
 				"pagePath": "pages/store/store",
-				"iconPath": "static/image/tab/icon_tab_storeActive.png",
+				"iconPath": "static/image/tab/icon_tab_store.png",
 				"selectedIconPath": "static/image/tab/icon_tab_storeActive.png",
 				"text": "店铺"
 			},
 			{
 				"pagePath": "pages/showcase/showcase",
 				"iconPath": "static/image/tab/icon_tab_showcase.png",
-				"selectedIconPath": "static/image/tab/icon_tab_showcase.png",
+				"selectedIconPath": "static/image/tab/icon_tab_showcaseActive.png",
 				"text": "橱窗"
 			},
 			{
 				"pagePath": "pages/mine/mine",
 				"iconPath": "static/image/tab/icon_tab_mine.png",
-				"selectedIconPath": "static/image/tab/icon_tab_mine.png",
+				"selectedIconPath": "static/image/tab/icon_tab_mineActive.png",
 				"text": "个人中心"
 			}
 		]

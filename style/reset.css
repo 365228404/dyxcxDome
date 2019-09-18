@@ -13,7 +13,7 @@ button {
   color: #27292B;
 }
 .button-hover {
-  background-color: inherit;
+  /* background-color: inherit; */
 }
 
 button[disabled]:not([type]) {

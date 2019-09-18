@@ -183,10 +183,11 @@
 	@import url("style/toast.css");
 	@import url("style/crad.css");
 	@import url("style/address.css");
+	@import url("style/goods.css");
 	page {
 	  background-color: #f7f7f7;
 	  color: #27292B;
-	  font-family: Arial, sans-serif;
+	  font-family: "PingFang SC", Arial, sans-serif;
 	  font-size: 32rpx;
 	  line-height:1;
 	  -webkit-overflow-scrolling: touch;
@@ -273,6 +274,7 @@
 	  padding-bottom: 100rpx;
 	}
 	.page_footer_100 {
+		box-sizing:border-box;
 	  position: fixed;
 	  z-index: 100;
 	  left: 0;
@@ -280,6 +282,24 @@
 	  width: 100%;
 	  height: 100rpx;
 	  background: #fff;
+		padding: 12rpx 30rpx;
+		display: flex;
+		justify-content: space-between;
+		box-shadow:0px -1px 0px 0px rgba(222,222,222,1);
+	}
+	.page_footer_168 {
+		box-sizing: border-box;
+	  position: fixed;
+	  z-index: 100;
+	  left: 0;
+	  bottom: 0;
+	  width: 100%;
+	  height: 168rpx;
+	  background: #fff;
+		padding: 12rpx 30rpx;
+		display: flex;
+		justify-content: space-between;
+		box-shadow:0px -1px 0px 0px rgba(222,222,222,1);
 	}
 	/* 底部按钮 E */
 	

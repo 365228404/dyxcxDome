@@ -1,7 +1,7 @@
 <template><!-- 小B（品牌会场商品详情） -->
-	<view class="pb100">
+	<view class="pb100" id="goodsDetail_page">
 		<loading v-if="isLoading"></loading>
-		
+		<auth v-if="!gld.isAuth&&gld.organizationId" @authSuccess="authSuccess"></auth>
 		<view>
 			<!-- banner S -->
 			<view class="rel pl30 pr30 bgf">
@@ -10,40 +10,153 @@
 						<swiper-item>
 							<image :src="item.imageUrl | getImgUrlBySize('m')" mode='aspectFill'></image>
 							<view class="swiper_number">{{index+1}}/{{imageList.length}}</view>
+							<view class='sold_out_goods' v-if="isSoldOut || isSellUp"></view>
+							<view class="sold_out_btn btn_darkgrey fz11" v-if="isSoldOut || isSellUp">{{isSellUp?'已下架':'已售罄'}}</view>
 						</swiper-item>
 					</block>
 				</swiper>
 			</view>
 			<!-- banner E -->
+			
+			<!-- 价格 S -->
 			<view class='fz0 bgf'>
-				<!-- 价格 -->
 				<view class='goods_title'>
 					<view class="flex1 fz14 lh36"> {{organizationGoods.goodsName}}</view>
 				</view>
 				<view class="goods_price">
-					<view class="mr20">
-						<view class='flex_text themeC'>
+					<view class="mr20 c_333">
+						<view class='flex_text'>
 							<view class='fz13'>￥</view>
 							<view class='fz20 b'>{{purchaseGoods.currPrice}}</view>
 						</view>
 						<view class="mt20 fz13 tc">销售价</view>
 					</view>
 					<view class="price_vertical_line"></view>
-					<view class="ml20 mr10">
-						<view class='flex_text themeC'>
+					<view class="ml20 mr10 c_FD7D6F">
+						<view class='flex_text'>
 							<view class='fz13'>￥</view>
 							<view class='fz20 b'>{{purchaseGoods.marketPrices}}</view>
 						</view>
 						<view class="mt20 fz13 tc">供货价</view>
 					</view>
-					<view class="dib c_grey3 fz12 mr10 vb mt10">
+					<view class="dib c_666 fz12 mr10 vb mt10">
 						<text class="t_line">￥{{purchaseGoods.marketPrices}}</text>
 					</view>
 				</view>
 			</view>
+			<!-- 价格 E -->
 			<view class='h20'></view>
+			
+			<!-- 如果售罄不显示 -->
+			<view v-if="!isSellUp">
+				<!-- 规格 S -->
+				<view class='pd40_vertical pl30 bgf'>
+					<view class='mb20 b'>规格选择</view>
+					<view class='spec_box pl0'>
+						<view class='shop_spec' v-if="goodsSpecMap.specOneList.length>0">
+							<view class='spec_name'>{{specOneName}}</view>
+							<block v-for="(item, index) in goodsSpecMap.specOneList" :key="item.specOne">
+								<view :class="['spec_btn','btn_default', isSoldOut?'btn_soldout':item.notChoose?'btn_grey':!item.isSelected?'btn_white':'']" @click='specDidClick(index, 1)'>{{item.specOne}}</view>
+							</block>
+						</view>
+						<view class='shop_spec' v-if="goodsSpecMap.specTwoList.length>0">
+							<view class='spec_name'>{{specTwoName}}</view>
+							<block v-for="(item, index) in goodsSpecMap.specTwoList" :key="item.specTwo">
+								<view :class="['spec_btn','btn_default', isSoldOut?'btn_soldout':item.notChoose?'btn_grey':!item.isSelected?'btn_white':'']" @click='specDidClick(index, 2)'>{{item.specTwo}}</view>
+							</block>
+						</view>
+						<view class='shop_spec'>
+							<view class='spec_name'>数量</view>
+							<view class='num_box'>
+								<view :class="['reduction',isSoldOut?'btn_soldout':quantity==1?'bd_grey4 c_grey4':'']" @click='reduceGoods'>-</view>
+								<view :class="[isSoldOut?'quantity_out':'numDisplayed']">{{isSoldOut? 0:quantity}}</view>
+								<view :class="['add','c_grey3', isSoldOut?'btn_soldout':quantity==purchaseGoods.totalStock?'bd_grey4 c_grey4':'']" @click='increaseGoods'>+</view>
+							</view>
+						</view>
+					</view>
+				</view>
+				<!-- 规格 E -->
+				<view class='h20'></view>
+				<!-- 详情 S -->
+				<view class='pd40_vertical pb150 bgf'>
+					<view v-if="organizationGoods.information || imageList.length > 0">
+						<view class='ml30 mb40 b500 c_333'>商品详情</view>
+						<view v-if="imageList" class="mga10">
+							<block v-for="(item) in imageList" :key="item.imageId">
+								<view class="flex_c">
+									<image class='maxW' :src="item.imageUrl | getImgUrlBySize('')" mode='widthFix'></image>
+								</view>
+							</block>
+						</view>
+					</view>
+				</view>
+				<!-- 详情 E -->
+				
+				<!-- 下架商品 S -->
+				<view class="sold_out" v-if="isSoldOut">
+					<view class="btn_darkgrey btn_480">
+						下架商品
+					</view>
+				</view>
+				<!-- 下架商品 E -->
+			</view>
+			<view v-else>
+				<view class='pb20 b pl30' v-if="groupGoodsList.length">猜你喜欢</view>
+				<view class="list_box">
+					<view v-for="(item, index) in groupGoodsList" :key="item.goodsSpecId" class='goodsItem bgf' @click='goodsDetail(item, index)'>
+						<view class='goodsItem_imgBox'>
+							<image class='goodsItem_img' mode='aspectFill' :src="item.goodsDefaultImage | getImgUrlBySize('s')" lazy-load></image>
+							<view class='sold_out_goods'></view>
+							<view class="sold_out_btn btn_darkgrey fz11">已售罄</view>
+						</view>
+						<view class='goods_bottom'>
+							<view class='goods_name'>{{item.goodsName}}</view>
+							<view class='goods_footer'>
+								<view class='goods_price'>
+									<view class='c_FD7D6F mr10'>
+										<text class='fz16 b'>￥{{item.dailyPrice}}</text>
+									</view>
+									<view class='t_line fz12 c_grey3'>￥{{item.originalPrice}}</view>
+								</view>
+							</view>
+							<view class='sales_box bg_FFF5CA'>
+								<view class="flexbox">
+									<view>
+										<image class="icon_money ml10" src='../../static/image/store/icon_store_money.png'></image>
+									</view>
+									<view>
+										<text class="ml10 mr10 fz12 c_AD8C4E">带货赚￥{{item.cashBackAmount}}</text>
+									</view>
+								</view>
+							</view>
+						</view>
+					</view>
+					<view class='nodata' v-if="groupGoodsList.length==0" style='width:750rpx;line-height:300rpx;'>暂无商品~</view>
+					<button class='loadmore' v-if="isLoad&&hasMoreData&&groupGoodsList.length>0" loading='true'>
+						正在努力加载更多~
+					</button>
+					<view class='loadmore' v-if="!isLoad&&!hasMoreData&&groupGoodsList.length>0">
+						已经到底了~
+					</view>
+				</view>
+			</view>
+			
+			<!-- 底部悬浮栏 S-->
+			<view class="page_footer_100">
+				<view class='flex1 flex_s' v-if="!(isSellUp || isSoldOut)">
+					<form reportSubmit='true' @submit="keepTap($event, 2)" class="dib">
+						<button class="btn_main bg_FFD662 cf" formType="submit">购买</button>
+					</form>
+					<button class="btn_480 btn_douyin" open-type="share" data-channel="video">拍抖音</button>
+				</view>
+				<view class="btn_main btn_darkgrey flex1" v-if="isSellUp">商品已售罄</view>
+				<view class="btn_main btn_main_theme flex1" v-if="!isSellUp&&isSoldOut">上架当前商品</view>
+			</view>
+			<!-- 底部悬浮栏 E-->
+			
 		</view>
-		
+		<!-- 返回顶部 -->
+		<image class='scrollTop' mode='aspectFill' v-if="floorstatus" @click='pageScrollToTop' src='../../static/image/default/icon_up.png'></image>
 		<toast v-if="toastHidden" :showToastTxt="showToastTxt"></toast>
 	</view>
 </template>
@@ -108,6 +221,16 @@
 				isNewUserDialog: false,
 				fromUserId: '',
 				brandEnter: false, // 小B从品牌会场进入的商品详情
+				
+				isSoldOut: true, // 是否下架
+				isSellUp: true, // 是否售罄
+				
+				// 猜你喜欢
+				groupGoodsList: [],
+				isLoad: false,
+				hasMoreData: false,
+				length: 10,
+				floorstatus: false, // 返回顶部
 			}
 		},
 		onLoad(options) {
@@ -127,6 +250,31 @@
 		onShow() {
 			
 		},
+		// 页面滚动事件
+		onPageScroll(e) {
+			if (e.scrollTop > 330 && !this.floorstatus) {
+				this.floorstatus = true;
+			} else if (e.scrollTop <= 330 && this.floorstatus) {
+				this.floorstatus = false;
+			}
+		},
+		// 页面下拉刷新
+		onPullDownRefresh() {
+			if (this.isSellUp) {
+				this.getGroupGoodsList(true);
+			}
+		},
+		// 页面上拉触底
+		onReachBottom() {
+			if (this.isSellUp) {
+				if (this.hasMoreData) {
+					if (!this.isLoad) {
+						this.isLoad = true;
+						this.getGroupGoodsList();
+					}
+				}
+			}
+		},
 		// 右上角分享
 		onShareAppMessage() {
 
@@ -137,6 +285,9 @@
 					that.fromUserId = options.fromUserId;
 				}
 				this.getGoodsDetailByGoosdId();
+			},
+			authSuccess() {
+				this.getData(this.options);
 			},
 			// 获取商品详情
 			getGoodsDetailByGoosdId() {
@@ -227,15 +378,19 @@
 					that.cashBackEnable = res.resultData.cashBackEnable;
 					that.showShopGuide = showShopGuide;
 					
-					that.isLoading = false;
-					// 不要同时渲染
-					setTimeout(function () {
-						dealGoodsSpec(that, res, false);
-					}, 300);
+					//  处理数据
+					dealGoodsSpec(that, res, false);
+					
+					if (true) {
+						that.isSellUp = true; //假设该商品已经售罄
+						that.isSoldOut = true;
+						that.getGroupGoodsList();
+					} else {
+						that.isLoading = false;
+					}
+					
 				}, function () { //请求失败
-					console.log('请求错误')
 					that.netStatus =  2;
-					that.isLoading = false;
 				});
 			},
 			// 点击规格
@@ -347,6 +502,56 @@
 					}
 				})
 			},
+			// 猜你喜欢的商品列表
+			getGroupGoodsList(onPullDown) {
+				let that = this;
+				let startIndex = onPullDown ? 0 : that.groupGoodsList.length;
+				that.util.sendPostWX(that.config.getNewOranizationStoreGoodsList, {
+					goodsGroupId: that.goodsGroupId,
+					length: that.length,
+					startIndex: startIndex,
+					gcategory: 1,
+					organizationId:that.gld.organizationId
+				}, function(res) {
+					uni.stopPullDownRefresh();
+					let groupGoodsList = res.resultData.goodsList || [];
+					if (groupGoodsList.length < that.length) { //如果返回的数据小于分页长度表示没有更多数据了
+						that.hasMoreData = false;
+					} else {
+						that.hasMoreData = true;
+					}
+					for (let i = 0; i < groupGoodsList.length; i++) {
+						let item = groupGoodsList[i];
+						item = setPurGoodsItem(item);
+					};
+					if (onPullDown) {
+						that.groupGoodsList = groupGoodsList;
+					} else {
+						that.groupGoodsList = that.groupGoodsList.concat(groupGoodsList);
+					};
+					that.isLoading = false;
+					that.isSwitchLoading = false;
+					that.isLoad = false;
+					//开启弹幕倒计时
+					// that.startOnlineInterval();
+				}, function() {
+					uni.stopPullDownRefresh();
+				});
+			},
+			// 返回顶部
+			pageScrollToTop() {
+				if (uni.createSelectorQuery()) {
+					uni.createSelectorQuery().select('#goodsDetail_page').boundingClientRect(function(rect) {
+						uni.pageScrollTo({
+							scrollTop: rect.top
+						})
+					}).exec()
+				} else {
+					uni.pageScrollTo({
+						scrollTop: 0
+					})
+				}
+			},
 		}
 	}
 </script>
@@ -408,6 +613,26 @@
 	  color: #fff;
 	  background: rgba(0,0,0,0.2);
 	  border-radius:16rpx;
+	}
+	.sold_out_goods {
+	  position: absolute;
+		background:linear-gradient(180deg,rgba(252,252,252,0.3) 0%,rgba(247,247,247,1) 100%);
+	  top: 0rpx;
+	  left: 0rpx;
+	  z-index: 2;
+		right: 0rpx;
+	  bottom: 0rpx;
+	}
+	.sold_out_btn {
+		position: absolute;
+		left: 292rpx;
+		bottom: 40rpx;
+		z-index: 3;
+		width:106rpx;
+		height:38rpx;
+		line-height: 38rpx;
+		border-radius:19px;
+		text-align: center;
 	}
 	.mr4{
 	  margin-right: 4rpx;
@@ -483,5 +708,28 @@
 	.min_item .mb14{
 	  margin-bottom: 14rpx;
 	}
+	.sold_out {
+		display: flex;
+		justify-content: center;
+		height: 248rpx;
+		padding-top: 60rpx;
+	}
+	.quantity_out {
+		color:#DEDEDE;
+		background:#fff;
+		flex: 1;
+		height: 100%;
+		font-size: 26rpx;
+		border-top:1rpx solid rgba(222,222,222,1);
+		border-bottom:1rpx solid rgba(222,222,222,1);
+	}
 	/* 底部悬浮栏 E */
+	.scrollTop {
+		position: fixed;
+		bottom: 120rpx;
+		right: 30rpx;
+		width: 70rpx;
+		height: 70rpx;
+		z-index: 50;
+	}
 </style>

@@ -9,7 +9,7 @@
 					<image class="maxBox" :src="gld.dYuserInfo.avatarUrl" mode="aspectFill"></image>
 				</view>
 				<view class="store_describe">
-					<view class="store_title fz20 b cf" v-if="gld.dYuserInfo.nickName">{{gld.dYuserInfo.nickName}}的店铺橱窗</view>
+					<view class="store_title fz20 b cf" v-if="gld.dYuserInfo.nickName">{{gld.dYuserInfo.nickName}}的店铺</view>
 				</view>
 			</view>
 			<!-- 店铺头部 E -->
@@ -18,7 +18,8 @@
 				<view v-for="(item, index) in groupGoodsList" :key="item.goodsSpecId" class='goodsItem bgf' @click='goodsDetail(item, index)'>
 					<view class='goodsItem_imgBox'>
 						<image class='goodsItem_img' mode='aspectFill' :src="item.goodsDefaultImage | getImgUrlBySize('s')" lazy-load></image>
-						<image class='sold_out' src='../../static/image/goods/icon_sold_out.png' v-if="item.totalStock==0"></image>
+						<view class='sold_out_goods'></view>
+						<view class="sold_out_btn btn_darkgrey fz11">已售罄</view>
 					</view>
 					<view class='goods_bottom'>
 						<view class='goods_name'>{{item.goodsName}}</view>
@@ -53,7 +54,7 @@
 			<!-- 列表 E -->
 		</view>
 		<!-- 返回顶部 -->
-		<image class='scrollTop' mode='aspectFill' v-if="floorstatus" @click='pageScrollToTop' src='../../static/image/default/icon_top.png'></image>
+		<image class='scrollTop' mode='aspectFill' v-if="floorstatus" @click='pageScrollToTop' src='../../static/image/default/icon_up.png'></image>
 		<toast v-if="toastHidden" :showToastTxt="showToastTxt"></toast>
 		<!-- <switchTabBar :tabNum="num" @cutTab="tabItemDidClick"></switchTabBar> -->
 	</view>
@@ -221,78 +222,4 @@
 		font-family: PingFangSC;
 	}
 	/* 店铺头部 E */
-	
-	/* 店铺列表 S */
-	.list_box {
-		padding: 30rpx 30rpx 0;
-		display: flex;
-		justify-content: space-between;
-		flex-wrap: wrap;
-	}
-	.list_box .goodsItem {
-		position: relative;
-		width: 330rpx;
-		margin-bottom: 30rpx;
-		border-radius: 16rpx;
-	}
-	.goodsItem .goodsItem_imgBox {
-	  position: relative;
-	  width: 100%;
-	  height: 330rpx;
-	}
-	.goodsItem .goodsItem_img {
-	  position: absolute;
-	  width: 100%;
-	  height: 100%;
-	  left: 0;
-	  top: 0;
-	  z-index: 1;
-	  border-radius: 16rpx 16rpx 0 0;
-	}
-	.goodsItem .sold_out {
-	  position: absolute;
-	  top: 65rpx;
-	  left: 65rpx;
-	  z-index: 2;
-	  width: 200rpx;
-	  height: 200rpx;
-	}
-	.goodsItem .goods_bottom {
-	  padding: 0 20rpx;
-	}
-	.goods_bottom .goods_name {
-	  height:72rpx;
-		font-family:PingFangSC;
-	  display:-webkit-box;
-	  text-overflow:ellipsis;
-	  -webkit-box-orient:vertical;
-	  -webkit-line-clamp:2;
-	  overflow:hidden;
-	  margin-top: 20rpx;
-	  font-size: 26rpx;
-	  line-height: 36rpx;
-	  color: #27292B;
-	}
-	.goodsItem .goods_footer {
-	  margin-top: 16rpx;
-	  display: flex;
-	  align-items: center;
-		padding-bottom: 20rpx;
-		border-bottom: 1rpx solid #DEDEDE;
-	}
-	.goods_footer .goods_price {
-	  flex: 1;
-	  display: flex;
-	  align-items: center;
-	}
-	.sales_box {
-	  display: inline-block;
-	  margin: 12rpx 0;
-		border-radius: 13rpx;
-	}
-	.sales_box .icon_money {
-		width: 20rpx;
-		height: 20rpx;
-	}
-	/* 店铺列表 E */
 </style>

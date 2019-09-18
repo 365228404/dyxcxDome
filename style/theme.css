@@ -18,22 +18,6 @@
   border-bottom:1rpx solid #FF4466;
 }
 
-.btn_default{
-  display: inline-block;
-  min-width: 120rpx;
-  text-align: center;
-  box-sizing: border-box;
-  padding: 16rpx 24rpx;
-  color:#fff;
-  background: #FF4466;
-  font-size:26rpx;
-  border-radius:56rpx;
-  white-space: nowrap;
-}
-.btn_red{
-  color:#FF4466;
-  background:#FFF3F4;
-}
 /* 小标签 */
 .tag_small{
   display: inline-block;
@@ -97,6 +81,12 @@
 .c_AD8C4E {
 	color: #AD8C4E;
 }
+.c_333 {
+	color: #333333;
+}
+.c_666 {
+	color: #666666;
+}
 /* background-color */
 .bgf {
   background: #fff;
@@ -134,8 +124,12 @@
 .bg_grey{
   background: #989898;
 }
+
 .bg_FFF5CA{
 	background: #FFF5CA;
+}
+.bg_FFD662 {
+	background: #FFD662;
 }
 /* border */
 .bd_grey4{
