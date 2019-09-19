@@ -49,11 +49,11 @@
 		<view class='scrollTop' v-if="floorstatus">
 			<image  mode='aspectFill' class="img70 mb10"  @click='pageScrollToTop' src='../../static/image/default/icon_up.png'></image>
 			<button>
-				<image  mode='aspectFill' class="img70" src='../../static/image/default/Icons_share.png'></image>
+				<image  mode='aspectFill' class="img70" src='../../static/image/goods/icon_shoot_detail.png'></image>
 			</button>
 		</view>
 		<view class="share btn_shoot btn_share" v-if="!floorstatus">
-			<image mode='aspectFill' class="img28 mr10 vab" src='../../static/image/goods/icon_share.png'></image> 分享
+			<image mode='aspectFill' class="img28 mr10 vab" src='../../static/image/goods/icon_shoot.png'></image>拍抖音
 		</view>
 		<toast v-if="toastHidden" :showToastTxt="showToastTxt"></toast>
 		<!-- <switchTabBar :tabNum="num" @cutTab="tabItemDidClick"></switchTabBar> -->
@@ -74,7 +74,7 @@
 		data() {
 			return {
 				num: 1,
-				isLoading: false,
+				isLoading: true,
 				toastHidden: false,
 				showToastTxt: '',
 				groupGoodsList: [],

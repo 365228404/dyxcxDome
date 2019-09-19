@@ -36,9 +36,13 @@
   border: 2rpx solid #FF4466;
   line-height: 20rpx;
 }
-.tag_small_red{
-  color: #FF4466;
-  background: #FFF3F4;
+.tag_small_buy{
+  color: #FD7D6F;
+  background: #FFF0E7;
+}
+.tag_small_type{
+  color: #989898;
+  background: #F7F7F7;
 }
 .tag_gradient{
   color: #fff;
@@ -87,6 +91,9 @@
 .c_666 {
 	color: #666666;
 }
+.c_CA9E5D {
+	color: #CA9E5D;
+}
 /* background-color */
 .bgf {
   background: #fff;
@@ -130,6 +137,9 @@
 }
 .bg_FFD662 {
 	background: #FFD662;
+}
+.bg_DEDEDE {
+	background: #DEDEDE;
 }
 /* border */
 .bd_grey4{

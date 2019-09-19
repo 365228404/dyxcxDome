@@ -30,7 +30,7 @@ const state = {
 		isOnRegistered: false,
 		fromOId: 48143, // 店铺ID(暂时先用模拟的)
 		groupId: 2,
-		token: 'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIxMjU4NDciLCJzdWIiOiIxNTgxNDk3OTM3NiIsImlhdCI6MTU2ODgwNjYxNH0.N4s1X83s-vZx0l-eIVGrydmHgVj1u5yk9mAKj7W0jVM',
+		token: 'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIxMjU4NDciLCJzdWIiOiIxNTgxNDk3OTM3NiIsImlhdCI6MTU2ODg2NTIyNH0.8l_rcl9GWIn8Oikr_cGVWxqnLwV5XhUKDkedCDcILx0',
 		// 是否是测试模式(上正式时记得注释或者改为false)
 		isTest: false,
 		testUserId: 1094680, //测试的用户
@@ -54,7 +54,9 @@ const state = {
 		douyinId: '',
 		id: '',
 		sessionKey: '',
-		type: true
+		type: true,
+		
+		isIpFullScreen: false, // 是否是全面屏
 	},
 	upd: { //改变前面页面栈的数据
 		areaId: '',

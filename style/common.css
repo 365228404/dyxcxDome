@@ -30,6 +30,9 @@
 .fz14 {
   font-size: 28rpx;
 }
+.fz15 {
+  font-size: 30rpx;
+}
 .fz16 {
   font-size: 32rpx;
 }
@@ -226,7 +229,9 @@
 .mr40 {
   margin-right: 40rpx;
 }
-
+.ml5 {
+  margin-left: 5rpx;
+}
 .ml10 {
   margin-left: 10rpx;
 }

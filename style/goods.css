@@ -1,0 +1,84 @@
+/* 店铺列表 S */
+	.list_box {
+		padding: 30rpx 30rpx 0;
+		display: flex;
+		justify-content: space-between;
+		flex-wrap: wrap;
+	}
+	.list_box .goodsItem {
+		position: relative;
+		width: 330rpx;
+		margin-bottom: 30rpx;
+		border-radius: 16rpx;
+	}
+	.goodsItem .goodsItem_imgBox {
+	  position: relative;
+	  width: 100%;
+	  height: 330rpx;
+	}
+	.goodsItem .goodsItem_img {
+	  position: absolute;
+	  width: 100%;
+	  height: 100%;
+	  left: 0;
+	  top: 0;
+	  z-index: 1;
+	  border-radius: 16rpx 16rpx 0 0;
+	}
+	.goodsItem .sold_out_goods {
+	  position: absolute;
+		background:linear-gradient(180deg,rgba(252,252,252,0.3) 0%,rgba(247,247,247,1) 100%);
+	  top: 0rpx;
+	  left: 0rpx;
+	  z-index: 2;
+		right: 0rpx;
+	  bottom: 0rpx;
+	}
+	.goodsItem .sold_out_btn {
+		position: absolute;
+		left: 116rpx;
+		bottom: 20rpx;
+		z-index: 3;
+		width:106rpx;
+		height:38rpx;
+		line-height: 38rpx;
+		border-radius:19px;
+		text-align: center;
+	}
+	.goodsItem .goods_bottom {
+	  padding: 0 20rpx;
+	}
+	.goods_bottom .goods_name {
+	  height:72rpx;
+	  display:-webkit-box;
+	  text-overflow:ellipsis;
+	  -webkit-box-orient:vertical;
+	  -webkit-line-clamp:2;
+	  overflow:hidden;
+	  margin-top: 20rpx;
+	  font-size: 26rpx;
+	  line-height: 36rpx;
+	  color: #27292B;
+	}
+	.goodsItem .goods_footer {
+	  margin-top: 16rpx;
+	  display: flex;
+	  align-items: center;
+		padding-bottom: 20rpx;
+		border-bottom: 1rpx solid #DEDEDE;
+	}
+	.goods_footer .goods_price {
+	  flex: 1;
+	  display: flex;
+	  align-items: center;
+	}
+	.sales_box {
+	  display: inline-block;
+	  margin: 12rpx 0;
+		border-radius: 13rpx;
+	}
+	.sales_box .icon_money {
+		width: 20rpx;
+		height: 20rpx;
+	}
+	/* 店铺列表 E */

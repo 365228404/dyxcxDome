@@ -22,24 +22,21 @@
 			<view class='fz0 bgf'>
 				<view class='goods_title'>
 					<view class="flex1 fz14 lh36"> {{organizationGoods.goodsName}}</view>
+					<button class='btn_shoot_detail btn_share_detail ml50' open-type="share">
+						<image mode='aspectFill' class="img28 mr10 vab" src='../../static/image/goods/icon_share_detail.png'></image> 分享
+					</button>
 				</view>
-				<view class="goods_price">
-					<view class="mr20 c_333">
-						<view class='flex_text'>
-							<view class='fz13'>￥</view>
-							<view class='fz20 b'>{{purchaseGoods.currPrice}}</view>
-						</view>
-						<view class="mt20 fz13 tc">销售价</view>
+				<view class="goods_price_center">
+					<view class="c_FD7D6F">
+						<view class="fz13 tc">销售价</view>
 					</view>
-					<view class="price_vertical_line"></view>
 					<view class="ml20 mr10 c_FD7D6F">
 						<view class='flex_text'>
 							<view class='fz13'>￥</view>
 							<view class='fz20 b'>{{purchaseGoods.marketPrices}}</view>
 						</view>
-						<view class="mt20 fz13 tc">供货价</view>
 					</view>
-					<view class="dib c_666 fz12 mr10 vb mt10">
+					<view class="dib c_666 fz12 mr10 vb mt5">
 						<text class="t_line">￥{{purchaseGoods.marketPrices}}</text>
 					</view>
 				</view>
@@ -143,20 +140,40 @@
 			
 			<!-- 底部悬浮栏 S-->
 			<view class="page_footer_100">
-				<view class='flex1 flex_s' v-if="!(isSellUp || isSoldOut)">
-					<form reportSubmit='true' @submit="keepTap($event, 2)" class="dib">
-						<button class="btn_main bg_FFD662 cf" formType="submit">购买</button>
-					</form>
-					<button class="btn_480 btn_douyin" open-type="share" data-channel="video">拍抖音</button>
+				<view class='flex_s footer_left fz10 c_grey3'>
+					<view class="tc mt5">
+						<image mode='aspectFill' class="img36" src='../../static/image/goods/icon_detail_home.png'></image>
+						<view class="mt10">首页</view>
+					</view>
+					<view class="tc mt5">
+						<image mode='aspectFill' class="img36" src='../../static/image/goods/icon_detail_shoppingcart.png'></image>
+						<view class="mt10">购物车</view>
+					</view>
+				</view>
+				<view class="flex1 flex" v-if="!(isSellUp||isSoldOut)">
+					<view class="footer_bleft tc btn_default_tag">
+						加入购物车
+					</view>
+					<view class="footer_bright tc btn_main_theme">
+						立即购买
+					</view>
 				</view>
 				<view class="btn_main btn_darkgrey flex1" v-if="isSellUp">商品已售罄</view>
-				<view class="btn_main btn_main_theme flex1" v-if="!isSellUp&&isSoldOut">上架当前商品</view>
+				<view class="btn_main btn_darkgrey flex1" v-if="!isSellUp&&isSoldOut">商品已下架</view>
 			</view>
 			<!-- 底部悬浮栏 E-->
 			
 		</view>
 		<!-- 返回顶部 -->
-		<image class='scrollTop' mode='aspectFill' v-if="floorstatus" @click='pageScrollToTop' src='../../static/image/default/icon_up.png'></image>
+		<view class='scrollTop' v-if="floorstatus">
+			<image  mode='aspectFill' class="img70 mb10"  @click='pageScrollToTop' src='../../static/image/default/icon_up.png'></image>
+			<button>
+				<image  mode='aspectFill' class="img70" src='../../static/image/goods/icon_shoot_detail.png'></image>
+			</button>
+		</view>
+		<view class="share btn_shoot btn_douyin" v-if="!floorstatus">
+			<image mode='aspectFill' class="img28 mr10 vab" src='../../static/image/goods/icon_shoot.png'></image> 拍抖音
+		</view>
 		<toast v-if="toastHidden" :showToastTxt="showToastTxt"></toast>
 	</view>
 </template>
@@ -382,13 +399,13 @@
 					dealGoodsSpec(that, res, false);
 					
 					if (true) {
-						that.isSellUp = true;  //假设该商品已经售罄
-						that.isSoldOut = true;
-						that.getGroupGoodsList();
+						that.isSellUp = false;  //假设该商品已经售罄
+						that.isSoldOut = false;
+						// that.getGroupGoodsList();
 					} else {
 						that.isLoading = false;
 					}
-					
+					that.isLoading = false;
 				}, function () { //请求失败
 				
 				});
@@ -677,6 +694,11 @@
 	  align-items: flex-start;
 	  padding: 0 30rpx 40rpx;
 	}
+	.goods_price_center{
+	  display: flex;
+	  align-items: center;
+	  padding: 0 30rpx 40rpx;
+	}
 	.vertical_line{
 	  height: 76rpx;
 	}
@@ -726,10 +748,34 @@
 	/* 底部悬浮栏 E */
 	.scrollTop {
 		position: fixed;
-		bottom: 120rpx;
+		bottom: 220rpx;
 		right: 30rpx;
 		width: 70rpx;
 		height: 70rpx;
 		z-index: 50;
+	}
+	.share {
+		position: fixed;
+		bottom: 130rpx;
+		right: 30rpx;
+		z-index: 50;
+	}
+	.footer_left {
+		width: 180rpx;
+		margin-right: 30rpx;
+	}
+	.footer_bleft {
+		width: 50%;
+		height: 76rpx;
+		line-height: 76rpx;
+		border-radius: 38rpx 0px 0px 38rpx;
+		font-size: 32rpx;
+	}
+	.footer_bright {
+		width: 50%;
+		height: 76rpx;
+		line-height: 76rpx;
+		border-radius: 0rpx 38px 38px 0rpx;
+		font-size: 32rpx;
 	}
 </style>

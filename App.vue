@@ -26,6 +26,20 @@
 					console.log(`uni.login调用失败`);
 				}
 			});
+			
+			//判断是否是全面屏
+			if(uni.getSystemInfoSync) {
+				let model = uni.getSystemInfoSync().model;
+				if (model.search('iPhone X') != -1 || model.search('iPhone XS') != -1 || model.search('iPhone XS Max') != -1 || model.search('iPhone XR') != -1) {
+					that.changeGld({
+						isIpFullScreen: true
+					});
+				} else {
+					that.changeGld({
+						isIpFullScreen: false
+					});
+				}
+			}
 		},
 		methods: {
 			...mapMutations({

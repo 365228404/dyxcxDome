@@ -30,6 +30,10 @@
 	color: #fff;
 	background: #FFD662;
 }
+.btn_default_tag {
+	color:#AD8C4E;
+	background: #FFF5CA;
+}
 .btn_red{
   color:#FF4466;
   background:#FFF3F4;
@@ -46,6 +50,15 @@
 .btn_share {
 	background:linear-gradient(90deg,rgba(255,151,197,1) 0%,rgba(254,132,120,1) 100%);
 	color: #fff;
+}
+.btn_shoot_detail {
+	padding: 14rpx 20rpx;
+	border-radius:26rpx;
+	font-size: 24rpx;
+}
+.btn_share_detail {
+	background: #FFF3F4;
+	color: #FF4466;
 }
 .btn_grey{
   color:#989898;
