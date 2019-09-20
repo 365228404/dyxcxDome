@@ -1,7 +1,6 @@
 <template><!-- 新增或者编辑地址 （记得把@input改成v-model） -->
-	<view>
-		<view>
-			<!-- 地址信息 S -->
+	<view class="pd2030">
+		<!-- <view>
 			<view class="page_footer_pd">
 			  <view class='wg_form_item'>
 			    <view class='wg_form_item_label'>收件人</view>
@@ -31,11 +30,53 @@
 			    <view class='wg_form_item_label themeC' @click='showDeleteDialog'>删除地址</view>
 			  </view>
 			</view>
-			<!-- 地址信息 E -->
+		</view> -->
+		
+		<view class="bgf bdr16 c_333 fz13">
+			<view class="addr_box">
+				<view class="pdl26">收货人</view>
+				<view class='wg_input ml40'>
+					<input type="text" @input="consigneeBindinput" :value="name" placeholder="请输入收货人姓名" placeholder-class="wg_placeholder"></input>
+				</view>
+			</view>
+			<view class="h1 bg_DEDEDE ml20 mr20"></view>
+			<view class="addr_box">
+				<view>手机号码</view>
+				<view class='wg_input ml40'>
+					<input type="number" @input="mobileBindinput" :value="phone" maxlength="11" placeholder="请输入收货人手机号" placeholder-class="wg_placeholder"></input>
+				</view>
+			</view>
+			<view class="h1 bg_DEDEDE ml20 mr20"></view>
+			<view class="addr_box" @click="onCity">
+				<view>所在地区</view>
+				<view class='wg_input ml40'>
+					{{area? area: areaPlaceholder}}
+				</view>
+				<view>
+					<image class="img20" src="../../static/image/order/icon_arrow_right_grey.png"></image>
+				</view>
+			</view>
+			<view class="h1 bg_DEDEDE ml20 mr20"></view>
+			<view class="addr_box">
+				<view>详细地址</view>
+				<view class='wg_input ml40'>
+					<input type="text" @input="addrBindinput" :value="address" placeholder="请输入详细有效地址" placeholder-class="wg_placeholder"></input>
+				</view>
+			</view>
+			<view class="h1 bg_DEDEDE ml20 mr20" v-if="!(isShopCart||hideDefault)"></view>
+			<view class="pd20 pt40 flex_sc" v-if="!(isShopCart||hideDefault)">
+				<view>设为默认地址</view>
+				<view @click="switchSet">
+					<image class="img60" :src="isDefault? '../../static/image/order/icon_select_blue.png' : '../../static/image/order/icon_select_gray.png'"></image>
+				</view>
+			</view>
 		</view>
-		<view class='page_footer bg_grey5'>
+		
+		<view class="btn_main btn_main_theme mt40 fz14" @click="keepTap">保存收货信息</view>
+		<view class="btn_main btn_darkgrey mt20 fz14" v-if="!(isAdd||addrLength<=1||isShopCart)" @click='showDeleteDialog'>删除收货信息</view>
+		<!-- <view class='page_footer bg_grey5'>
 		  <view class='page_footer_btn bg_theme' @click.stop="keepTap">保存</view>
-		</view>
+		</view> -->
 		<!-- 删除弹框  -->
 		<view :class="[isDeleteDialog ? 'js_dialog' : '' ]">
 		  <view class="dialog_mask" />
@@ -71,7 +112,7 @@
 				phone: '',
 				area: '', // 地区
 				address: '', // 收货地址
-				isDefault: '',
+				isDefault: 0,
 				addrLength: 0,
 				hideDefault: true,
 				areaId: '',
@@ -82,6 +123,7 @@
 			}
 		},
 		onLoad(options) {
+			console.log(this.gld.id);
 			if (options.addrLength) {
 				this.addrLength = options.addrLength;
 			}
@@ -148,8 +190,8 @@
 			},
 			// 设置默认地址开关
 			switchSet(e) {
-				let isDefault = e.detail.value ? 1 : 0;
-				this.isDefault = isDefault;
+				this.isDefault = !this.isDefault;
+				this.isDefault = this.isDefault? 1 : 0;
 			},
 			verifyConsignee(name) {
 				name = name || '';
@@ -218,7 +260,7 @@
 							weiXinAddress: param,
 							needRefresh: true
 						})
-						uni.navigateBack();
+						// uni.navigateBack();
 					}
 				})
 			},
@@ -261,6 +303,14 @@
 </script>
 
 <style>
+	.addr_box {
+		padding: 40rpx 20rpx;
+		display: flex;
+		align-items: center;
+	}
+	.pdl26 {
+		padding-left: 26rpx;
+	}
 	.wg_form_item_label {
 	  width: 170rpx;
 	  margin-right: 20rpx;

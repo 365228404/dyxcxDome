@@ -2,8 +2,8 @@
 	<view>
 		<loading v-if="isLoading"></loading>
 		
-		<view>
-			<view class='page_footer_pd'>
+		<view class="pd2030">
+			<!-- <view>
 			  <view class="addr_item" v-if="userAddrList.length" v-for="(item, index) in userAddrList" :key='index'>
 			    <view class="addr_item_cont">
 			      <image class='img44 mr30' v-if="listType==2&&item.select" :src="item.select?'../../static/image/default/icon_ok.png':'../../static/image/default/icon_no.png'"></image>
@@ -11,19 +11,41 @@
 			        <view class="flexbox mb30">
 			          <view class='addr_name'>{{item.name}}</view>
 			          <text space='nbsp'> {{item.phone}} </text>
-			          <view class='tag_small ml10' v-if="item.isDefault">默认</view>
+			          <view class='tag_small ml10' v-if="!item.isDefault">默认</view>
 			        </view>
 			        <view class="fz13 c_grey2">{{item.area}} {{item.address}}</view>
 			      </view>
 			      <view class='addr_edit c_grey3' @click='editAddress(item)'>编辑</view>
 			    </view>
 			  </view>
-			  <view class='nodata' v-if="!userAddrList.length">你还没有添加地址呢~</view>
 			  <view class='page_footer bg_grey5'>
 			    <view class='page_footer_btn bg_theme' @click="addAddr">新建地址</view>
 			  </view>
+			</view> -->
+			<view v-if="userAddrList.length">
+				<block v-for="(item, index) in userAddrList" :key='index'>
+					<view class="pd30 bdr16 bgf flex_c mt20">
+						<view class="flex1">
+							<view class="fz14">
+								<view class="c_333 mb20 flexbox b500">
+									<view>{{item.name}}</view>
+									<view class="mr20 ml20">{{item.phone}}</view>
+									<view v-if="item.isDefault == 1" class="tag_small tag_small_buy">默认</view>
+								</view>
+								<view class="c_666 nowrap1 lh30">
+									{{item.area}}{{item.address}}
+								</view>
+							</view>
+						</view>
+						<view class="ml10" @click='editAddress(item)'>
+							<image class="img36" src="../../static/image/order/icon_editor_gray.png"></image>
+						</view>
+					</view>
+				</block>
 			</view>
-			<toast v-if="toastHidden" :showToastTxt="showToastTxt"></toast>
+			<view class='nodata' v-if="!userAddrList.length">你还没有添加地址呢~</view>
+			
+			<view class="btn_main btn_main_theme mt40 fz14" @click="addAddr">新增收货地址</view>
 		</view>
 		
 		<toast v-if="toastHidden" :showToastTxt="showToastTxt"></toast>
