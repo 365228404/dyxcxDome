@@ -81,7 +81,7 @@
 				isLoad: false,
 				hasMoreData: false,
 				length: 10,
-				goodsGroupId: 18039,
+				goodsGroupId: 18381,
 				floorstatus: false,
 			}
 		},

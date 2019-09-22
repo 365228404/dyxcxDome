@@ -95,7 +95,7 @@
 							userInfo: userInfo,
 							id: userInfo.id,
 							sessionKey: userInfo.sessionKey,
-							type: userInfo.type == 1 ? false:true
+							// type: userInfo.type == 1 ? false:true
 						});
 						console.log(result);
 						typeof callback == "function" && callback();

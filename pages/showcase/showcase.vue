@@ -49,11 +49,11 @@
 		<view class='scrollTop' v-if="floorstatus">
 			<image  mode='aspectFill' class="img70 mb10"  @click='pageScrollToTop' src='../../static/image/default/icon_up.png'></image>
 			<button>
-				<image  mode='aspectFill' class="img70" src='../../static/image/goods/icon_shoot_detail.png'></image>
+				<image  mode='aspectFill' class="img70" src='../../static/image/default/icons_share.png'></image>
 			</button>
 		</view>
 		<view class="share btn_shoot btn_share" v-if="!floorstatus">
-			<image mode='aspectFill' class="img28 mr10 vab" src='../../static/image/goods/icon_shoot.png'></image>拍抖音
+			<image mode='aspectFill' class="img28 mr10 vab" src='../../static/image/goods/icon_shoot.png'></image>分享
 		</view>
 		<toast v-if="toastHidden" :showToastTxt="showToastTxt"></toast>
 		<!-- <switchTabBar :tabNum="num" @cutTab="tabItemDidClick"></switchTabBar> -->
@@ -81,7 +81,7 @@
 				isLoad: false,
 				hasMoreData: false,
 				length: 10,
-				goodsGroupId: 18039,
+				goodsGroupId: 18381,
 				floorstatus: false, // 返回顶部
 			}
 		},

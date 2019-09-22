@@ -24,9 +24,9 @@
 			<view class="pd2030 bgf bdr16 mt20">
 				<view class="c_333 fz14">提现金额</view>
 				<view class="pt40 pb40 flexbox">
-					<view class="fz36 c_333 b500 mr10">￥</view>
+					<view class="fz30 c_333 b500 mr10">￥</view>
 					<view class='flex1 mr10'>
-						<input type="text" :value="money" @input="getMoney" :placeholder="placeName" placeholder-class="placeholder" :class="['h72','c_333','b500',money?'fz36':'']"></input>
+						<input type="text" :value="money" @input="getMoney" :placeholder="placeName" placeholder-class="placeholder" :class="['h60','c_333','b500',money?'fz30':'']"></input>
 					</view>
 					<view class="c_333 fz13">全部</view>
 				</view>
@@ -40,17 +40,30 @@
 			</view>
 			
 			<view class="btn_main btn_main_theme mt40 fz14">确认提现</view>
-			<view class="btn_main btn_darkgrey mt40 fz14" @click="showCenterDialog=!showCenterDialog, pwdFocus=true">确认提现</view>
+			<view class="btn_main btn_darkgrey mt40 fz14" @click="showDialogPassword" >确认提现</view>
 		</view>
 		
 		<!-- 提现密码 S -->
 		<view :class="[showCenterDialog ? 'js_dialog' : '']">
 		  <view class="dialog_mask" />
 		  <view class="dialog_container">
-		    <view class="dialog_content" catchtap='emptyEvent'>
-		      <image class='dialog_close' src="../../static/image/order/icon_close_black.png" @click="showCenterDialog=!showCenterDialog"></image>
-		      <view class="dialog_title">请输入提现密码</view>
-		      <view class='fz14'>
+		    <view class="dialog_content_blance bdr16 bgf fz14 c_333" @click.stop='emptyEvent'>
+		      <image class='dialog_close_blance pd30' src="../../static/image/order/icon_close_black.png" @click.stop="hiddenDialogPassword"></image>
+		      <view class="b500">请输入提现密码</view>
+					<view class="bg_DEDEDE h1 mt30"></view>
+					<view class="tc mt20">提现</view>
+					<view class="fz30 c_FD7D6F b500 tc mt30">¥2000.00</view>
+					<view class="tc mt30">扣除 ¥4.00 手续费</view>
+					<view class="pwd_style_blance flex mt30">
+						<input class="pwd_input_blance"  type='number' password maxlength="6" :focus="pwdFocus" :value="passWord" @input="onChangeInput"/>
+					  <block v-for="(item, index) in [0,1,2,3,4,5]" :key="index">
+					    <view class="pwd_block_blance flex_c flex1">
+					      <view v-if="passWord[item]" class="pwd_dot_blance"></view>
+					    </view>
+					  </block>
+					</view>
+					<view class="tc mt30">忘记密码？</view>
+		     <!-- <view class='fz14'>
 		        <view class="pwd_style_box">
 		          <input class="pwd_input"  type='number' password maxlength="6" :focus="pwdFocus" :value="passWord" @input="onChangeInput"/>
 		          <view class="pwd_style">
@@ -62,7 +75,7 @@
 		          </view>
 		        </view>
 		        <view class='c_link mt40' bindtap='forgetPwd'>忘记密码</view>
-		      </view>
+		      </view> -->
 		    </view>
 		  </view>
 		</view>
@@ -127,83 +140,79 @@
 			},
 			emptyEvent(){},
 			onChangeInput(e) {
-			    let that = this;
-			    if (e.detail.value.length > 6) {
-			      return;
-			    }
-					let passWordArr = this.passWordArr;
-			    if (e.detail.value.length > that.passWord.length) {
-			      passWordArr.push(true);
-			    } else if (e.detail.value.length < that.passWord.length) {
-			      passWordArr.pop();
-			    }
-					this.passWord = e.detail.value;
-					this.passWordArr = passWordArr;
-			    // if (e.detail.value.length == 6) {
-			    //   setTimeout(function () {
-			    //     that.hideCenterDialog();
-			    //     that.yhtPlusWithdrawGoBankAccount(e.detail.value);
-			    //   }, 100);
-			    // }
-			  },
+				let that = this;
+				if (e.detail.value.length > 6) {
+					return;
+				}
+				this.passWord = e.detail.value + '';
+			},
+			showDialogPassword() {
+				this.showCenterDialog = true;
+				this.passWord = '';
+				setTimeout(()=>{
+					this.pwdFocus = true;
+				},300)
+			},
+			hiddenDialogPassword() {
+				this.passWord = '';
+				this.showCenterDialog = false;
+				this.pwdFocus = false;
+			}
 		}
 	}
 </script>
 
-<style>
-	.h72 {
-		height: 72rpx;
+<style lang="scss">
+	.h60 {
+		height: 60rpx;
 	}
 	.placeholder {
 		color: #989898;
 		font-size: 26rpx;
 	}
-	.pwd_style_box{
-	  width:100%;
-	  position: relative;
-	}
-	.pwd_style {
-	  height: 88rpx;
-	  display: flex;
-	  align-items: center;
-	  justify-content: center;
-	  border: 1rpx solid #ccc;
-	  border-right: 0;
-	  margin-top: 40rpx;
-	}
-	.pwd_input {
-	  border: 0;
-	  color: transparent;
-	  font-size: 24rpx;
-	  width: 100%;
-	  height: 88rpx;
-	  line-height: 88rpx;
-	  opacity: 0;
-	  overflow: hidden;
-	  position: absolute;
-	  left: 750rpx;
-	  top: 0;
-	  z-index: 1;
-	  text-align: left;
-	}
-	.pwd_block {
-	  flex: 1;
-	  height: 100%;
-	  background: #f5f5f5;
-	  border-right: 1rpx solid #ccc;
-	  overflow: hidden;
-	}
-	.pwd_dot {
-	  width: 20rpx;
-	  height: 20rpx;
-	  background: black;
-	  border-radius: 10rpx;
-	}
-	
 	.withdrawal_num{
 	  font-size: 40rpx;
 	  line-height: 30rpx;
 	  margin-top: 20rpx;
 	  margin-bottom: 30rpx;
+	}
+	.dialog_content_blance {
+		width: 510rpx;
+		box-sizing: border-box;
+		padding: 38rpx 30rpx 30rpx;
+		position: relative;
+		.dialog_close_blance {
+			position: absolute;
+			right: 0rpx;
+			top: 12rpx;
+			z-index: 1;
+			width: 20rpx;
+			height: 20rpx;
+		}
+		.pwd_style_blance {
+			position: relative;
+			border-right: 1rpx solid #DEDEDE;
+			.pwd_block_blance {
+				border: 1rpx solid #DEDEDE;
+				border-right: none;
+				height: 76rpx;
+				.pwd_dot_blance {
+					width: 20rpx;
+					height: 20rpx;
+					background: black;
+					border-radius: 10rpx;
+				}
+			}
+			.pwd_input_blance {
+				position: absolute;
+				height: 100%;
+				width: 100%;
+				top: 0;
+				left: 750rpx;
+				z-index: 1;
+				color: transparent;
+				opacity: 0;
+			}
+		}
 	}
 </style>
