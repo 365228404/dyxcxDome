@@ -1,7 +1,7 @@
 <template><!-- 小B店铺 -->
 	<view id="store_page">
 		<loading v-if="isLoading"></loading>
-		<auth v-if="!gld.isAuth&&gld.organizationId" @authSuccess="authSuccess"></auth>
+		<auth v-if="!gld.isAuth&&gld.type" @authSuccess="authSuccess"></auth>
 		<view class="pt30">
 			<!-- 店铺头部 S -->
 			<view class="store_header" v-if="gld.dYuserInfo">
@@ -18,17 +18,17 @@
 				<view v-for="(item, index) in groupGoodsList" :key="item.goodsSpecId" class='goodsItem bgf' @click='goodsDetail(item, index)'>
 					<view class='goodsItem_imgBox'>
 						<image class='goodsItem_img' mode='aspectFill' :src="item.goodsDefaultImage | getImgUrlBySize('s')" lazy-load></image>
-						<view class='sold_out_goods'></view>
-						<view class="sold_out_btn btn_darkgrey fz11">已售罄</view>
+						<view class='sold_out_goods' v-if="item.totalStock==0"></view>
+						<view class="sold_out_btn btn_darkgrey fz11" v-if="item.totalStock==0">已售罄</view>
 					</view>
 					<view class='goods_bottom'>
 						<view class='goods_name'>{{item.goodsName}}</view>
 						<view class='goods_footer'>
 							<view class='goods_price'>
 								<view class='c_FD7D6F mr10'>
-									<text class='fz16 b'>￥{{item.dailyPrice}}</text>
+									<text class='fz16 b'>￥{{item.supplyPrice | toFixedNum}}</text>
 								</view>
-								<view class='t_line fz12 c_grey3'>￥{{item.originalPrice}}</view>
+								<view class='t_line fz12 c_grey3'>￥{{item.highestPrice | toFixedNum}}</view>
 							</view>
 						</view>
 						<view class='sales_box bg_FFF5CA'>
@@ -37,13 +37,13 @@
 									<image class="icon_money ml10" src='../../static/image/store/icon_store_money.png'></image>
 								</view>
 								<view>
-									<text class="ml10 mr10 fz12 c_AD8C4E">带货赚￥{{item.cashBackAmount}}</text>
+									<button class="ml10 mr10 fz12 c_AD8C4E">带货赚￥{{(item.lowestPrice-item.supplyPrice) | toFixedNum}}</button>
 								</view>
 							</view>
 						</view>
 					</view>
 				</view>
-				<view class='nodata' v-if="groupGoodsList.length==0" style='width:750rpx;line-height:300rpx;'>暂无商品~</view>
+				<view class='nodata' v-if="groupGoodsList.length==0&&!isLoading" style='width:750rpx;line-height:300rpx;'>暂无商品~</view>
 				<button class='loadmore' v-if="isLoad&&hasMoreData&&groupGoodsList.length>0" loading='true'>
 					正在努力加载更多~
 				</button>
@@ -56,18 +56,13 @@
 		<!-- 返回顶部 -->
 		<image class='scrollTop' mode='aspectFill' v-if="floorstatus" @click='pageScrollToTop' src='../../static/image/default/icon_up.png'></image>
 		<toast v-if="toastHidden" :showToastTxt="showToastTxt"></toast>
-		<!-- <switchTabBar :tabNum="num" @cutTab="tabItemDidClick"></switchTabBar> -->
 	</view>
 </template>
 
 <script>
-	import switchTabBar from '../../components/switchTabBar';
 	import {mapState, mapMutations} from 'vuex';
 	import {setPurGoodsItem} from '../../utils/goodsTools';
 	export default {
-		components:{
-			switchTabBar
-		},
 		computed:{
 			...mapState(['gld', 'server', 'config'])
 		},
@@ -81,7 +76,7 @@
 				isLoad: false,
 				hasMoreData: false,
 				length: 10,
-				goodsGroupId: 18381,
+				goodsGroupId: 18485,
 				floorstatus: false,
 			}
 		},
@@ -108,8 +103,8 @@
 			}
 		},
 		// 右上角分享
-		onShareAppMessage() {
-
+		onShareAppMessage(shareOption) {
+			
 		},
 		// 页面滚动事件
 		onPageScroll(e) {
@@ -140,10 +135,6 @@
 					} else {
 						that.hasMoreData = true;
 					}
-					for (let i = 0; i < groupGoodsList.length; i++) {
-						let item = groupGoodsList[i];
-						item = setPurGoodsItem(item);
-					};
 					if (onPullDown) {
 						that.groupGoodsList = groupGoodsList;
 					} else {
@@ -179,21 +170,7 @@
 			authSuccess() {
 				this.getData(this.options);
 			},
-			// 点击自定义tab
-			tabItemDidClick(index) {
-				if (index == 0) {
-					return;
-				}
-				if (index == 1) {
-					uni.redirectTo({
-						url: '../showcase/showcase'
-					});
-				} else if (index == 2) {
-					uni.redirectTo({
-						url: '../mine/mine'
-					});
-				}
-			}
+			emptyEvent() {}
 		}
 	}
 </script>

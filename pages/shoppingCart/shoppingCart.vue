@@ -1,63 +1,64 @@
 <template>
 	<!-- 购物车页面 -->
-	<view class="pb100">
+	<view>
 		<loading v-if="isLoading"></loading>
-		<customTabBar :tabNum="num" @cutTab="tabItemDidClick" v-if="!gld.organizationId"></customTabBar>
-
-		<view class="cart_list">
-			<!-- 每个商品 S -->
-			<view class="order_goods" v-for="(goodsItem, goodsIndex) in shoppingData" :key="goodsIndex">
-				<view class="order_goods_item" @touchstart.stop="touchS($event, goodsItem)" @touchmove.stop="touchM($event, goodsItem)" @touchend.stop="touchE($event, goodsItem)" :style="{ left: goodsItem.left + 'rpx' }">
-					<view>
-						<image class="img36 m20" :src="1? '../../static/image/order/uncheck_gray.png': '../../static/image/order/uncheck_grayActive.png' " mode="aspectFill"></image>
-					</view>
-					<image class="goods_img" :src="goodsItem.goodsDefaultImage | getImgUrlBySize('s')" mode="aspectFill"></image>
-					<view class="goods_info">
+		<view :class="[gld.type? 'pb164':'pb264']">
+			<view class="cart_list">
+				<!-- 每个商品 S -->
+				<view class="order_goods" v-for="(goodsItem, goodsIndex) in shoppingData" :key="goodsIndex">
+					<view class="order_goods_item" @touchstart.stop="touchS($event, goodsItem)" @touchmove.stop="touchM($event, goodsItem)" @touchend.stop="touchE($event, goodsItem)" :style="{ left: goodsItem.left + 'rpx' }">
 						<view>
-							<view class="goods_name c_333">{{ goodsItem.goodsName }}</view>
+							<image class="img36 m20" :src="1? '../../static/image/order/uncheck_gray.png': '../../static/image/order/uncheck_grayActive.png' " mode="aspectFill"></image>
 						</view>
-						<!-- <view class='c_grey3'>货号：{{goodsItem.goodsNumber}}</view> -->
-						<view class="goods_spec tag_small tag_small_type">{{ goodsItem.specName }}</view>
-						<view class="flex_sc">
-							<view class="c_FD7D6F b500 fz16 flex1">￥{{ goodsItem.goodsPrice }}</view>
-							<view class="flexbox">
-								<view class="shoppingcart_jian"></view>
-								<view class="goodsItem_quantity bg_DEDEDE c_333 ml10 mr10">{{ goodsItem.quantity }}</view>
-								<view><image mode="aspectFill" class="img20" src="../../static/image/order/shoppingcart_jia.png"></image></view>
+						<image class="goods_img" :src="goodsItem.goodsDefaultImage | getImgUrlBySize('s')" mode="aspectFill"></image>
+						<view class="goods_info">
+							<view>
+								<view class="goods_name c_333">{{ goodsItem.goodsName }}</view>
+							</view>
+							<!-- <view class='c_grey3'>货号：{{goodsItem.goodsNumber}}</view> -->
+							<view class="goods_spec tag_small tag_small_type">{{ goodsItem.specName }}</view>
+							<view class="flex_sc">
+								<view class="c_FD7D6F b500 fz16 flex1">￥{{ goodsItem.goodsPrice }}</view>
+								<view class="flexbox">
+									<view class="shoppingcart_jian"></view>
+									<view class="goodsItem_quantity bg_DEDEDE c_333 ml10 mr10">{{ goodsItem.quantity }}</view>
+									<view><image mode="aspectFill" class="img20" src="../../static/image/order/shoppingcart_jia.png"></image></view>
+								</view>
 							</view>
 						</view>
 					</view>
+					<view class="order_goods_oper" @click="deleteItem(goodsIndex)">删除</view>
 				</view>
-				<view class="order_goods_oper" @click="deleteItem(goodsIndex)">删除</view>
+				<!-- 每个商品 E -->
 			</view>
-			<!-- 每个商品 E -->
-			<!-- 底部悬浮栏 S-->
-			<view class="page_footer_100">
-				<view class="flex_c">
-					<view>
-						<image class="img36 mr20" :src="1? '../../static/image/order/uncheck_gray.png': '../../static/image/order/uncheck_grayActive.png' " mode="aspectFill"></image>
-					</view>
-					<view class="c_333 fz12">全选</view>
-				</view>
-				<view class="flex_c">
-					<view class="fz14 c_333">合计: <text class="c_FD7D6F">￥0.00</text></view>
-					<view class="btn_main btn_darkgrey ml20">去结算</view>
-				</view>
-			</view>
-			<!-- 底部悬浮栏 E-->
 		</view>
 		
+		<!-- 底部悬浮栏 S-->
+		<view :class="['page_footer_100',(gld.isIpFullScreen&&!gld.type)?'bottom164':(!gld.type)?'bottom100':(gld.isIpFullScreen)?'bottom64':'']">
+			<view class="flex_c">
+				<view>
+					<image class="img36 mr20" :src="1? '../../static/image/order/uncheck_gray.png': '../../static/image/order/uncheck_grayActive.png' " mode="aspectFill"></image>
+				</view>
+				<view class="c_333 fz12">全选</view>
+			</view>
+			<view class="flex_c">
+				<view class="fz14 c_333">合计: <text class="c_FD7D6F">￥0.00</text></view>
+				<view class="btn_main btn_darkgrey ml20">去结算</view>
+			</view>
+		</view>
+		<!-- 底部悬浮栏 E-->
+		<taBar :tabNum="num" @cutTab="tabItemDidClick" v-if="!gld.type"></taBar>
 		<toast v-if="toastHidden" :showToastTxt="showToastTxt"></toast>
 	</view>
 </template>
 
 <script>
 import { mapState, mapMutations } from 'vuex';
-import customTabBar from '../../components/customTabBar';
+import taBar from '../../components/customTabBar';
 import Touches from '../../utils/Touches';
 export default {
 	components: {
-		customTabBar
+		taBar
 	},
 	computed: {
 		...mapState(['gld', 'server', 'config'])

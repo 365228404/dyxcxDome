@@ -20,17 +20,17 @@
 				tabItemList: [{
 					title: '店铺',
 					isSelected: false,
-					selImg: '../../static/image/tab/icon_tab_storeActive.png',
-					dfImg: '../../static/image/tab/icon_tab_storeActive.png'
-				}, {
-					title: '橱窗',
-					isSelected: false,
-					selImg: '../../static/image/tab/icon_tab_showcase.png',
+					selImg: '../../static/image/tab/icon_tab_showcaseActive.png',
 					dfImg: '../../static/image/tab/icon_tab_showcase.png'
+				}, {
+					title: '购物车',
+					isSelected: false,
+					selImg: '../../static/image/tab/icon_tab_shoppingcartActive.png',
+					dfImg: '../../static/image/tab/icon_tab_shoppingcart.png'
 				}, {
 					title: '个人中心',
 					isSelected: false,
-					selImg: '../../static/image/tab/icon_tab_mine.png',
+					selImg: '../../static/image/tab/icon_tab_mineActive.png',
 					dfImg: '../../static/image/tab/icon_tab_mine.png'
 				}]
 			}

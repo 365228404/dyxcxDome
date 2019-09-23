@@ -1,6 +1,7 @@
 <template><!-- 个人中心 -->
 	<view>
 		<loading v-if="isLoading"></loading>
+		<auth v-if="!gld.isAuth&&gld.type" @authSuccess="authSuccess"></auth>
 		
 		<view class="mine_page">
 			<view class="rel header_box">
@@ -91,31 +92,29 @@
 		</view>
 		
 		<toast v-if="toastHidden" :showToastTxt="showToastTxt"></toast>
-		<!-- <switchTabBar :tabNum="num" @cutTab="tabItemDidClick"></switchTabBar> -->
 	</view>
 </template>
 
 <script>
-	import switchTabBar from '../../components/switchTabBar';
 	import {mapState, mapMutations} from 'vuex';
 	
 	export default {
-		components:{
-			switchTabBar
-		},
 		computed:{
 			...mapState(['gld', 'server', 'config'])
 		},
 		data() {
 			return {
 				num: 2,
-				isLoading: false,
+				isLoading: true,
 				toastHidden: false,
 				showToastTxt: ''
 			}
 		},
 		onLoad(options) {
-			
+			this.util.getUserInfo(()=>{
+				if (!this.gld.isAuth) return;
+				this.getData();
+			})
 		},
 		onShow() {
 			
@@ -137,6 +136,9 @@
 
 		},
 		methods: {
+			getData() {
+				this.isLoading = false;
+			},
 			//我的订单
 			order(index) {
 				// if (this.join()) {
@@ -145,6 +147,9 @@
 				// 		url: "../order/order?index=" + orderIndex
 				// 	})
 				// }
+			},
+			authSuccess() {
+				this.getData(this.options);
 			},
 			// 判断是否已经加入(组织)
 			join() {
@@ -155,21 +160,6 @@
 					return false;
 				}
 				return true;
-			},
-			// 点击自定义tab
-			tabItemDidClick(index) {
-				if (index == 2) {
-					return;
-				}
-				if (index == 0) {
-					uni.redirectTo({
-						url: '../store/store'
-					});
-				} else if (index == 1) {
-					uni.redirectTo({
-						url: '../showcase/showcase'
-					});
-				}
 			}
 		}
 	}

@@ -1,7 +1,7 @@
 <template><!-- 小B（品牌会场商品详情） -->
 	<view class="pb100" id="goodsDetail_page">
 		<loading v-if="isLoading"></loading>
-		<auth v-if="!gld.isAuth&&gld.organizationId" @authSuccess="authSuccess"></auth>
+		<auth v-if="!gld.isAuth&&gld.type" @authSuccess="authSuccess"></auth>
 		<view>
 			<!-- banner S -->
 			<view class="rel pl30 pr30 bgf">
@@ -93,7 +93,7 @@
 				<!-- 详情 E -->
 				
 				<!-- 下架商品 S -->
-				<view class="sold_out" v-if="isSoldOut">
+				<view class="sold_out" v-if="!isSoldOut">
 					<view class="btn_darkgrey btn_480">
 						下架商品
 					</view>
@@ -222,8 +222,8 @@
 				fromUserId: '',
 				brandEnter: false, // 小B从品牌会场进入的商品详情
 				
-				isSoldOut: true, // 是否下架
-				isSellUp: true, // 是否售罄
+				isSoldOut: false, // 是否下架
+				isSellUp: false, // 是否售罄
 				
 				// 猜你喜欢
 				groupGoodsList: [],
@@ -244,6 +244,7 @@
 				this.goodsGroupId = options.goodsGroupId;
 			}
 			this.util.getUserInfo((userInfo)=>{
+				if (!this.gld.isAuth) return;
 				this.getData(options);
 			})
 		},
@@ -276,8 +277,36 @@
 			}
 		},
 		// 右上角分享
-		onShareAppMessage() {
-
+		onShareAppMessage(shareOption) { 
+			let that = this;
+			let path = '/pages/InPurchasing/goodsDetail?goodsSpecId=' + this.goodsSpecId +'&goodsGroupId='+ this.goodsSpecId;
+			switch (shareOption.channel) {
+				case 'video':
+					return {
+						channel: 'video',
+						title: '测试1',
+						path: path,
+						extra: {
+							videoPath: shareOption.target.dataset.path
+						}
+					};
+					break;
+				default:
+					return {
+						title: '云货优选',
+						desc: '3.3折等你来购',
+						path: path, // ?后面的参数会在转发页面打开时传入onLoad方法
+						imageUrl: '../../static/image/default/searchDemo1.jpg', // 支持本地或远程图片，默认是小程序icon
+						templateId: '3s56sfujosf5jrcf42',
+						success() {
+							console.log('转发发布器已吊起，并不意味着用户转发成功，微头条不提供这个时机的回调');
+						},
+						fail() {
+							console.log('转发发布器吊起失败');
+						}
+					};
+					break;
+			}
 		},
 		methods: {
 			getData(options) {
@@ -381,7 +410,7 @@
 					//  处理数据
 					dealGoodsSpec(that, res, false);
 					
-					if (true) {
+					if (false) {
 						that.isSellUp = true; //假设该商品已经售罄
 						that.isSoldOut = true;
 						that.getGroupGoodsList();

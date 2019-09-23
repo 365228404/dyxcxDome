@@ -30,7 +30,7 @@ const state = {
 		isOnRegistered: false,
 		fromOId: 48143, // 店铺ID(暂时先用模拟的)
 		groupId: 2,
-		token: 'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIxMjU4NDciLCJzdWIiOiIxNTgxNDk3OTM3NiIsImlhdCI6MTU2OTE2NTg0OH0.agx56nKm2hRA1OH0KDqF9PCpprGif8aLsV7e9f6p9Ds',
+		token: 'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIxMjU4NDciLCJzdWIiOiIxNTgxNDk3OTM3NiIsImlhdCI6MTU2OTIyNjc5Mn0.wZgJVOxdotCWPLxzX4zO14yH-TCcLyC0oIlmQdQnEP4',
 		// 是否是测试模式(上正式时记得注释或者改为false)
 		isTest: false,
 		testUserId: 1094680, //测试的用户

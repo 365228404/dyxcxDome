@@ -1,7 +1,7 @@
 <template><!-- 小B橱窗页面 -->
 	<view id="showecase_page">
 		<loading v-if="isLoading"></loading>
-		<auth v-if="!gld.isAuth&&gld.organizationId" @authSuccess="authSuccess"></auth>
+		<auth v-if="!gld.isAuth&&gld.type" @authSuccess="authSuccess"></auth>
 		<view class="pt30">
 			<!-- 店铺头部 S -->
 			<view class="showcase_header" v-if="gld.dYuserInfo">
@@ -56,18 +56,13 @@
 			<image mode='aspectFill' class="img28 mr10 vab" src='../../static/image/goods/icon_shoot.png'></image>分享
 		</view>
 		<toast v-if="toastHidden" :showToastTxt="showToastTxt"></toast>
-		<!-- <switchTabBar :tabNum="num" @cutTab="tabItemDidClick"></switchTabBar> -->
 	</view>
 </template>
 
 <script>
-	import switchTabBar from '../../components/switchTabBar';
 	import {mapState, mapMutations} from 'vuex';
 	import {setPurGoodsItem} from '../../utils/goodsTools';
 	export default {
-		components:{
-			switchTabBar
-		},
 		computed:{
 			...mapState(['gld', 'server', 'config'])
 		},
@@ -81,7 +76,7 @@
 				isLoad: false,
 				hasMoreData: false,
 				length: 10,
-				goodsGroupId: 18381,
+				goodsGroupId: 18485,
 				floorstatus: false, // 返回顶部
 			}
 		},
@@ -93,6 +88,7 @@
 				this.goodsGroupId = options.goodsGroupId;
 			}
 			this.util.getUserInfo((userInfo)=>{
+				if (!this.gld.isAuth) return;
 				this.getData(options);
 			})
 		},
@@ -178,21 +174,6 @@
 					uni.pageScrollTo({
 						scrollTop: 0
 					})
-				}
-			},
-			// 点击自定义tab
-			tabItemDidClick(index) {
-				if (index == 1) {
-					return;
-				}
-				if (index == 0) {
-					uni.redirectTo({
-						url: '../store/store'
-					});
-				} else if (index == 2) {
-					uni.redirectTo({
-						url: '../mine/mine'
-					});
 				}
 			}
 		}

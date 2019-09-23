@@ -7,14 +7,14 @@
 	}
 	.list_box .goodsItem {
 		position: relative;
-		width: 330rpx;
+		width: 340rpx;
 		margin-bottom: 30rpx;
 		border-radius: 16rpx;
 	}
 	.goodsItem .goodsItem_imgBox {
 	  position: relative;
 	  width: 100%;
-	  height: 330rpx;
+	  height: 340rpx;
 	}
 	.goodsItem .goodsItem_img {
 	  position: absolute;

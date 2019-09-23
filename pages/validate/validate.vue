@@ -86,7 +86,7 @@
 				countDown: 60,
 				// 图形验证码对象
 				imgCodeShow: true,
-				isLoading: false,
+				isLoading: true,
 				isJoin: false,
 				channel: '斗米兼职',
 				timeStamp: new Date().getTime()
@@ -109,6 +109,7 @@
 				this.getData(this.options);
 			},
 			getData() {
+				this.isLoading = false;
 				// this.getValidateCode();
 			},
 			// 获取图形验证码
@@ -244,6 +245,32 @@
 								code: res.code
 							}),
 							successFn(res) {
+								// 注册成功后更新数据
+								that.util.sendPost({
+									url: that.config.ClientLoginLogin,
+									data: {
+										code: res.code
+									},
+									// method: 'POST',
+									successFn(result) {
+										let userInfo = result.data || {};
+										that.changeGld({
+											userInfo: userInfo,
+											id: userInfo.id,
+											sessionKey: userInfo.sessionKey,
+											// type: userInfo.type == 1 ? false:true
+										});
+										// 注册成功跳转到B端店铺
+										uni.switchTab({
+											url: '../store/store'
+										})
+									},
+									failFn(error) {
+										that.changeGld({
+											userInfo: {},
+										});
+									}
+								})
 								this.isJoin = false;
 							},
 							failFn(error) {

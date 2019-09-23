@@ -12,6 +12,7 @@
 		},
 		onShow() {
 			let that = this;
+			console.log(`uni.log`);
 			if (this.gld.userInfo) return;
 			uni.login({
 				success(res) {
@@ -28,18 +29,18 @@
 			});
 			
 			//判断是否是全面屏
-			if(uni.getSystemInfoSync) {
-				let model = uni.getSystemInfoSync().model;
-				if (model.search('iPhone X') != -1 || model.search('iPhone XS') != -1 || model.search('iPhone XS Max') != -1 || model.search('iPhone XR') != -1) {
-					that.changeGld({
-						isIpFullScreen: true
-					});
-				} else {
-					that.changeGld({
-						isIpFullScreen: false
-					});
-				}
-			}
+			// if(uni.getSystemInfoSync) {
+			// 	let model = uni.getSystemInfoSync().model;
+			// 	if (model.search('iPhone X') != -1 || model.search('iPhone XS') != -1 || model.search('iPhone XS Max') != -1 || model.search('iPhone XR') != -1) {
+			// 		that.changeGld({
+			// 			isIpFullScreen: true
+			// 		});
+			// 	} else {
+			// 		that.changeGld({
+			// 			isIpFullScreen: false
+			// 		});
+			// 	}
+			// }
 		},
 		methods: {
 			...mapMutations({
@@ -50,7 +51,7 @@
 				let that = this;
 				// console.log('that111',that,that.util);
 				that.loginByWechat(()=>{
-					if (!that.gld.organizationId) {
+					if (!that.gld.type) {
 						typeof callback == "function" && callback();
 						return;
 					}
@@ -61,7 +62,7 @@
 								dYuserInfo: res.userInfo || {},
 								isAuth: true
 							});
-							uni.setStorageSync('isAuth', true);
+							// uni.setStorageSync('isAuth', true);
 							typeof callback == "function" && callback();
 							
 						},
@@ -70,7 +71,7 @@
 							that.changeGld({
 								isAuth: false
 							});
-							uni.setStorageSync('isAuth', false);
+							// uni.setStorageSync('isAuth', false);
 							typeof callback == "function" && callback(false);
 						},
 						complete() {
@@ -284,7 +285,7 @@
 	.page_footer_100 {
 		box-sizing:border-box;
 	  position: fixed;
-	  z-index: 100;
+	  z-index: 101;
 	  left: 0;
 	  bottom: 0;
 	  width: 100%;
@@ -295,19 +296,28 @@
 		justify-content: space-between;
 		box-shadow:0px -1px 0px 0px rgba(222,222,222,1);
 	}
-	.page_footer_168 {
+	.page_footer_164 {
 		box-sizing: border-box;
 	  position: fixed;
-	  z-index: 100;
+	  z-index: 101;
 	  left: 0;
 	  bottom: 0;
 	  width: 100%;
-	  height: 168rpx;
+	  height: 164rpx;
 	  background: #fff;
 		padding: 12rpx 30rpx;
 		display: flex;
 		justify-content: space-between;
 		box-shadow:0px -1px 0px 0px rgba(222,222,222,1);
+	}
+	.bottom100 {
+		bottom: 100rpx;
+	}
+	.bottom164 {
+		bottom: 164rpx;
+	}
+	.bottom64 {
+		bottom: 64rpx;
 	}
 	/* 底部按钮 E */
 	
@@ -338,8 +348,8 @@
 	/* 常用样式 E */
 	
 	/* iPhone 全面屏 */
-	.pb168{
-	  padding-bottom: 168rpx;
+	.ip_pb164{
+	  padding-bottom: 164rpx;
 	}
 	.ip_pb64 {
 	  padding-bottom: 64rpx;
