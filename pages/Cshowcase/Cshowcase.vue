@@ -64,8 +64,16 @@
 	import taBar from '../../components/customTabBar.vue';
 	import {mapState, mapMutations} from 'vuex';
 	import {setPurGoodsItem} from '../../utils/goodsTools';
+	import loading from '../../components/loading';
+	import toast from '../../components/toast';
+	import auth from '../../components/auth';
+	import noData from '../../components/noData';
 	export default {
 		components:{
+			loading,
+			toast,
+			auth,
+			noData,
 			taBar
 		},
 		computed:{

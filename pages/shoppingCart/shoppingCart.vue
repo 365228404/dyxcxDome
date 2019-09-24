@@ -56,7 +56,17 @@
 import { mapState, mapMutations } from 'vuex';
 import taBar from '../../components/customTabBar';
 import Touches from '../../utils/Touches';
+import loading from '../../components/loading';
+import toast from '../../components/toast';
+import auth from '../../components/auth';
+import noData from '../../components/noData';
 export default {
+	components:{
+		loading,
+		toast,
+		auth,
+		noData
+	},
 	components: {
 		taBar
 	},

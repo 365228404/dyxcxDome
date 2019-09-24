@@ -5,7 +5,11 @@
 </template>
 <script>
 	import {mapState} from 'vuex';
+	import loading from '../../components/loading';
 	export default {
+		components:{
+			loading
+		},
 		data() {
 			return {
 				isLoading: true

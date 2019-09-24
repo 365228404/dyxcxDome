@@ -6,12 +6,12 @@
 			<!-- banner S -->
 			<view class="rel pl30 pr30 bgf">
 				<swiper>
-					<block v-for="(item, index) in imageList" :key="item.imageId" :index="index">
+					<block v-for="(item, index) in imageList" :key="index">
 						<swiper-item>
-							<image :src="item.imageUrl | getImgUrlBySize('m')" mode='aspectFill'></image>
+							<image :src="item.filesPath | fiterImgUrl" mode='aspectFill'></image>
 							<view class="swiper_number">{{index+1}}/{{imageList.length}}</view>
-							<view class='sold_out_goods' v-if="isSoldOut || isSellUp"></view>
-							<view class="sold_out_btn btn_darkgrey fz11" v-if="isSoldOut || isSellUp">{{isSellUp?'已下架':'已售罄'}}</view>
+							<view class='sold_out_goods' v-if="goodsItem.isSoldOut || goodsItem.isSellOut"></view>
+							<view class="sold_out_btn btn_darkgrey fz11" v-if="goodsItem.isSoldOut || goodsItem.isSellOut">{{goodsItem.isSellOut?'已下架':'已售罄'}}</view>
 						</swiper-item>
 					</block>
 				</swiper>
@@ -21,7 +21,7 @@
 			<!-- 价格 S -->
 			<view class='fz0 bgf'>
 				<view class='goods_title'>
-					<view class="flex1 fz14 lh36"> {{organizationGoods.goodsName}}</view>
+					<view class="flex1 fz14 lh36"> {{goodsItem.name}}</view>
 				</view>
 				<view class="goods_price">
 					<view class="mr20 c_333">
@@ -48,7 +48,7 @@
 			<view class='h20'></view>
 			
 			<!-- 如果售罄不显示 -->
-			<view v-if="!isSellUp">
+			<view v-if="!goodsItem.isSellOut">
 				<!-- 规格 S -->
 				<view class='pd40_vertical pl30 bgf'>
 					<view class='mb20 b'>规格选择</view>
@@ -84,7 +84,7 @@
 						<view v-if="imageList" class="mga10">
 							<block v-for="(item) in imageList" :key="item.imageId">
 								<view class="flex_c">
-									<image class='maxW' :src="item.imageUrl | getImgUrlBySize('')" mode='widthFix'></image>
+									<image class='maxW' :src="server + item.filesPath" mode='widthFix'></image>
 								</view>
 							</block>
 						</view>
@@ -144,8 +144,8 @@
 			<!-- 底部悬浮栏 S-->
 			<view class="page_footer_100">
 				<view class='flex1 flex_s' v-if="!(isSellUp || isSoldOut)">
-					<form reportSubmit='true' @submit="keepTap($event, 2)" class="dib">
-						<button class="btn_main bg_FFD662 cf" formType="submit">购买</button>
+					<form reportSubmit='true' class="dib">
+						<button class="btn_main bg_FFD662 cf" formType="submit" @click="keepTap(0)">购买</button>
 					</form>
 					<button class="btn_480 btn_douyin" open-type="share" data-channel="video">拍抖音</button>
 				</view>
@@ -153,6 +153,60 @@
 				<view class="btn_main btn_main_theme flex1" v-if="!isSellUp&&isSoldOut">上架当前商品</view>
 			</view>
 			<!-- 底部悬浮栏 E-->
+			
+			<!-- 购物弹窗 S -->
+			<view :class="[showShopModal ? 'js_dialog' : '']">
+				<view class="dialog_mask" />
+				<view class="dialog_container" @click.stop="setShopModalStatus(0)">
+					<view class="drawer_modal" @click.stop="emptyEvent">
+						<image class="drawer_close" src="../../static/image/default/icon_pop_close.png" @click="setShopModalStatus(0)"></image>
+						<!-- 商品信息  -->
+						<view class="shop_hd">
+							<view class="shop_show"><image class="shop_img" mode="aspectFill" :src="imageList[0].imageUrl"></image></view>
+							<view class="shop_info">
+								<view class="goods_name">{{ organizationGoods.goodsName }}</view>
+								<view>
+									<text class="fz12 themeC">￥</text>
+									<text class="fz18 themeC b">{{ purchaseGoods.currPrice }}</text>
+									<text class="c_grey3 fz11 ml10 t_line">￥{{ purchaseGoods.marketPrices }}</text>
+								</view>
+							</view>
+						</view>
+						<!-- 规格与数量 -->
+						<scroll-view scroll-y="true" :class="['shop_bd', 'spec_box', isIpFullScreen ? 'ip_shop_bd' : '']">
+							<view class="shop_spec" v-if="goodsSpecMap.specOneList.length > 0">
+								<view class="spec_name">{{ goodsSpecMap.specOneName }}</view>
+								<block v-for="(item, index) in goodsSpecMap.specOneList" :key="item.specOne">
+									<view :class="['spec_btn', 'btn_default', item.notChoose ? 'btn_grey' : !item.isSelected ? 'btn_white' : '']" @click="specDidClick(index, 1)">
+										{{ item.specOne }}
+									</view>
+								</block>
+							</view>
+							<view class="shop_spec" v-if="goodsSpecMap.specTwoList.length > 0">
+								<view class="spec_name">{{ goodsSpecMap.specTwoName }}</view>
+								<block v-for="(item, index) in goodsSpecMap.specTwoList" :key="item.specTwo">
+									<view :class="['spec_btn', 'btn_default', item.notChoose ? 'btn_grey' : !item.isSelected ? 'btn_white' : '']" @click="specDidClick(index, 2)">
+										{{ item.specTwo }}
+									</view>
+								</block>
+							</view>
+							<view class="shop_spec">
+								<view class="spec_name">数量</view>
+								<view class="num_box">
+									<view :class="['reduction', quantity == 1 ? 'bd_grey4 c_grey4' : '']" @click.stop="reduceGoods">-</view>
+									<view class="numDisplayed">{{ quantity }}</view>
+									<view :class="['add', 'c_grey3', quantity == purchaseGoods.totalStock ? 'bd_grey4 c_grey4' : '']" @click.stop="increaseGoods">+</view>
+								</view>
+							</view>
+						</scroll-view>
+						<view :class="['drawer_ft', isIpFullScreen ? 'ip_shop_bottom' : '']">
+							<view class="drawer_btn drawer_btn_white" @click="keepTap(1)">加入购物车</view>
+							<view class="drawer_btn bg_theme cf" @click="keepTap(2)">立即购买</view>
+						</view>
+					</view>
+				</view>
+			</view>
+			<!-- 购物弹窗 E  -->
 			
 		</view>
 		<!-- 返回顶部 -->
@@ -166,9 +220,19 @@
 	import {setPurGoodsItem} from '../../utils/goodsTools';
 	import {getDidClickSpec, dealGoodsSpec, keepTap} from '../../utils/shoppingTools';
 	import {getImgUrlBySize} from '../../utils/imageTool';
+	import loading from '../../components/loading';
+	import toast from '../../components/toast';
+	import auth from '../../components/auth';
+	import noData from '../../components/noData';
 	export default {
+		components:{
+			loading,
+			toast,
+			auth,
+			noData
+		},
 		computed:{
-			...mapState(['gld', 'server', 'config', 'imgServer'])
+			...mapState(['gld', 'server', 'config', 'imgServer', 'upd'])
 		},
 		data() {
 			return {
@@ -184,7 +248,6 @@
 				// 是否未开售
 				noSale: false,
 				sourceType: '',
-				imageList: [],
 				organizationGoods: [],
 				goodsTotalStock: '',
 				netStatus: false,
@@ -211,7 +274,6 @@
 				// 购买数量
 				quantity: 1,
 				// 选中的商品规格（加入购物车/立即购买）
-				purchaseGoods: {},
 				isPurchasing: true,
 				// 购物相关 E
 				customPremiumIndex: 0,
@@ -231,9 +293,16 @@
 				hasMoreData: false,
 				length: 10,
 				floorstatus: false, // 返回顶部
+				
+				showShopModal: false,
+				
+				goodsItem: {}, // 当前商品对象
+				imageList: [], // 当前商品图片数组
+				purchaseGoods: {}, // 选中的商品规格 （默认选中第一种）
 			}
 		},
 		onLoad(options) {
+			console.log(this.upd.goodsItem);
 			if (options.brandEnter) {
 				this.brandEnter = true;
 			}
@@ -309,11 +378,24 @@
 			}
 		},
 		methods: {
+			...mapMutations(['changeUpd']),
 			getData(options) {
-				if (options.fromUserId) {
-					that.fromUserId = options.fromUserId;
+				// if (options.fromUserId) {
+				// 	this.fromUserId = options.fromUserId;
+				// }
+				// this.getGoodsDetailByGoosdId();
+				if (this.upd.goodsItem) {
+					this.goodsItem = this.upd.goodsItem;
+					this.disposeGoodsData();
+					this.changeUpd({
+						goodsItem: null
+					})
 				}
-				this.getGoodsDetailByGoosdId();
+			},
+			disposeGoodsData() { // 处理当前商品数据
+				let goodsItem = this.goodsItem;
+				this.imageList = goodsItem.photos || [];
+				this.isLoading = false;
 			},
 			authSuccess() {
 				this.getData(this.options);
@@ -469,9 +551,13 @@
 				this.quantity++;
 			},
 			// 确认添加购物车 / 确认购买
-			keepTap(e, shoppingType) {
-				console.log(e, shoppingType);
+			keepTap(shoppingType) {
+				console.log(shoppingType);
 				let that = this;
+				if (shoppingType == 0) {
+					this.showShopModal = true;
+					return;
+				}
 				if (!that.purchaseGoods.goodsSpecId || that.purchaseGoods.supplyPrice < 0) {
 					
 					that.util.showToast(that, '请勾选商品类型');
@@ -581,6 +667,9 @@
 					})
 				}
 			},
+			setShopModalStatus() {
+				this.showShopModal = false;
+			}
 		}
 	}
 </script>

@@ -134,6 +134,9 @@ let config = {
 	
 	//商家注册接口
 	ClientLoginRegister: 'ClientLogin/register',
+	
+	//商品列表
+	ProductManagerList: 'ProductManager/list'
 }
 export default config;
 // export const login = 'login';

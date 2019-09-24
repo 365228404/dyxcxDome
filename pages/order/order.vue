@@ -218,7 +218,17 @@
 	import RSAUtils from '../../utils/ras';
 	import {getOriginalImg} from '../../utils/imageTool';
 	import {setRefundItem, getBrandName} from '../../utils/goodsTools';
+	import loading from '../../components/loading';
+	import toast from '../../components/toast';
+	import auth from '../../components/auth';
+	import noData from '../../components/noData';
 	export default {
+		components:{
+			loading,
+			toast,
+			auth,
+			noData
+		},
 		computed:{
 			...mapState(['gld', 'server', 'config'])
 		},

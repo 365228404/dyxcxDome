@@ -76,11 +76,19 @@
 <script>
 	import {mapState, mapMutations} from 'vuex';
 	import taBar from '../../components/customTabBar';
+	import loading from '../../components/loading';
+	import toast from '../../components/toast';
+	import auth from '../../components/auth';
+	import noData from '../../components/noData';
 	export default {
 		computed:{
 			...mapState(['gld', 'server', 'config'])
 		},
 		components:{
+			loading,
+			toast,
+			auth,
+			noData,
 			taBar
 		},
 		data() {

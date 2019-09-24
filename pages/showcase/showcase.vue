@@ -1,7 +1,7 @@
 <template><!-- 小B橱窗页面 -->
 	<view id="showecase_page">
 		<loading v-if="isLoading"></loading>
-		<auth v-if="!gld.isAuth&&gld.type" @authSuccess="authSuccess"></auth>
+		<auth v-if="!gld.isAuth" @authSuccess="authSuccess"></auth>
 		<view class="pt30">
 			<!-- 店铺头部 S -->
 			<view class="showcase_header" v-if="gld.dYuserInfo">
@@ -62,7 +62,17 @@
 <script>
 	import {mapState, mapMutations} from 'vuex';
 	import {setPurGoodsItem} from '../../utils/goodsTools';
+	import loading from '../../components/loading';
+	import toast from '../../components/toast';
+	import auth from '../../components/auth';
+	import noData from '../../components/noData';
 	export default {
+		components:{
+			loading,
+			toast,
+			auth,
+			noData
+		},
 		computed:{
 			...mapState(['gld', 'server', 'config'])
 		},
@@ -76,8 +86,9 @@
 				isLoad: false,
 				hasMoreData: false,
 				length: 10,
-				goodsGroupId: 18485,
+				goodsGroupId: 18569,
 				floorstatus: false, // 返回顶部
+				fromUserId: '',
 			}
 		},
 		onLoad(options) {

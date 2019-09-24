@@ -72,3 +72,12 @@ Vue.filter('getImgUrlBySize', function(imageUrl, size, flag){
 	  };
 	};
 });
+//处理图片路径
+Vue.filter('fiterImgUrl', function(imageUrl){
+	if (!imageUrl) {
+	  imageUrl = '../../static/image/default/default.jpg';
+	  return imageUrl;
+	} else {
+	   return state.server + imageUrl;
+	};
+});

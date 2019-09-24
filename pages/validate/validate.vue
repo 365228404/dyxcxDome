@@ -64,7 +64,17 @@
 
 <script>
 	import {mapState, mapMutations} from 'vuex';
+	import loading from '../../components/loading';
+	import toast from '../../components/toast';
+	import auth from '../../components/auth';
+	import noData from '../../components/noData';
 	export default {
+		components:{
+			loading,
+			toast,
+			auth,
+			noData
+		},
 		computed: {
 			...mapState(['gld', 'config'])
 		},

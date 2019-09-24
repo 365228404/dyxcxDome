@@ -183,7 +183,17 @@
 	import {setPurGoodsItem} from '../../utils/goodsTools';
 	import {getDidClickSpec, dealGoodsSpec, keepTap} from '../../utils/shoppingTools';
 	import {getImgUrlBySize} from '../../utils/imageTool';
+	import loading from '../../components/loading';
+	import toast from '../../components/toast';
+	import auth from '../../components/auth';
+	import noData from '../../components/noData';
 	export default {
+		components:{
+			loading,
+			toast,
+			auth,
+			noData
+		},
 		computed:{
 			...mapState(['gld', 'server', 'config', 'imgServer'])
 		},

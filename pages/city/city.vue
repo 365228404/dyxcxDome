@@ -15,8 +15,11 @@
 
 <script>
 	import {mapState, mapMutations} from 'vuex';
-	
+	import loading from '../../components/loading';
 	export default {
+		components:{
+			loading
+		},
 		computed:{
 			...mapState(['config'])
 		},

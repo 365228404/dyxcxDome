@@ -87,7 +87,8 @@
 				this.util.sendPost({
 					url: that.config.ClientLoginLogin,
 					data: {
-						code: that.$options.globalData.code
+						code: that.$options.globalData.code,
+						name:111
 					},
 					// method: 'POST',
 					successFn(result) {
