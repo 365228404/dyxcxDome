@@ -3,7 +3,7 @@
 		<loading v-if="isLoading"></loading>
 		
 		<view class="pd2030">
-			<view class="pd2030 bgf bdr16 flex_sc">
+			<view class="pd2030 bgf bdr16 flex_sc" @click="storeHead">
 				<view class="c_333 fz15">店铺头像</view>
 				<view class="flexbox">
 					<view class="img120 mr20">
@@ -14,7 +14,7 @@
 					</view>
 				</view>
 			</view>
-			<view class="pd_box bgf bdr16 flex_sc mt20">
+			<view class="pd_box bgf bdr16 flex_sc mt20" @click="storeName">
 				<view class="c_333 fz15">店铺名称</view>
 				<view class="flexbox">
 					<view class="c_grey3 fz14 mr20">
@@ -25,7 +25,7 @@
 					</view>
 				</view>
 			</view>
-			<view class="pd2030 bgf bdr16 flex_sc mt20">
+			<view class="pd2030 bgf bdr16 flex_sc mt20" @click="serviceCode">
 				<view class="c_333 fz15">店铺客服二维码</view>
 				<view class="flexbox">
 					<view class="img120 mr20">
@@ -36,7 +36,7 @@
 					</view>
 				</view>
 			</view>
-			<view class="pd_box bgf bdr16 flex_sc mt20">
+			<view class="pd_box bgf bdr16 flex_sc mt20" @click="goManageAddList">
 				<view class="c_333 fz15">收货地址管理</view>
 				<view>
 					<image class="img20" src="../../static/image/order/icon_arrow_right_grey.png" mode="aspectFill"></image>
@@ -94,7 +94,20 @@
 
 		},
 		methods: {
-			
+			serviceCode() {
+				this.util.showToast(this, '功能待开发');
+			},
+			storeName() {
+				this.util.showToast(this, '功能待开发');
+			},
+			storeHead() {
+				this.util.showToast(this, '功能待开发');
+			},
+			goManageAddList() {
+				uni.navigateTo({
+					url:'../manageAddrList/manageAddrList'
+				})
+			}
 		}
 	}
 </script>

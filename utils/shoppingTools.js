@@ -7,7 +7,7 @@ function getDidClickSpec(that, index, specType) {
   if (specType == 1) { //点击规格1
     let specOneItem = that.goodsSpecMap.specOneList[index];
     if (that.goodsSpecMap.specTwoList.length == 0 || specOneItem.specTwoList.length == 0) { //如果是单规格
-      if (specOneItem.totalStock <= 0) {
+      if (specOneItem.stock <= 0) {
         that.util.showToast(that, '该规格没有库存了呢~', "", 1000);
         return;
       }
@@ -26,7 +26,7 @@ function getDidClickSpec(that, index, specType) {
 
       let specTwoList = that.goodsSpecMap.specTwoList;
       if (specTwoList.length == 0) { //如果规格2数组为0直接设置规格1为购买商品
-        setPurchaseGoods(specOneItem, false, that);
+        getPurchaseGoods(specOneItem, false, that);
       }
       for (let i = 0; i < specTwoList.length; i++) {
         let specTwoItem = specTwoList[i];
@@ -35,23 +35,25 @@ function getDidClickSpec(that, index, specType) {
           if (specTwoItem.isSelected) {
             specTwoItem.isSelected = false;
           }
-          setPurchaseGoods(specOneItem, false, that);
+          getPurchaseGoods(specOneItem, false, that);
         } else {
           let tempSpecTwo = "";
           for (let j = 0; j < specOneItem.specTwoList.length; j++) { //遍历规格1包含的规格2
             let tempItem = specOneItem.specTwoList[j];
-            if (tempItem.specTwo == specTwoItem.specTwo) {
-              tempSpecTwo = specTwoItem.specTwo;
-              if (tempItem.totalStock > 0) { //库存大于0该规格才可选
+            if (tempItem.size == specTwoItem.size) {
+              tempSpecTwo = specTwoItem.size;
+              if (tempItem.stock > 0) { //库存大于0该规格才可选
                 specTwoItem.notChoose = false;
-                if (specTwoItem.isSelected && tempItem.supplyPrice >= 0 && tempItem.goodsSpecId && tempItem.specOne == specOneItem.specOne) { //如果已经有选中的规格2
-                  setPurchaseGoods(tempItem, false, that);
+								console.log('走到了这里了11111');
+                if (specTwoItem.isSelected && tempItem.supplyPrice >= 0 && tempItem.id && tempItem.color == specOneItem.color) { //如果已经有选中的规格2
+                  console.log('走到了这里了222222');
+									getPurchaseGoods(tempItem, false, that);
                 }
               } else { //库存小于等于0该规格为不可选状态
                 specTwoItem.notChoose = true;
                 if (specTwoItem.isSelected) {
                   specTwoItem.isSelected = false;
-                  setPurchaseGoods({}, false, that);
+                  getPurchaseGoods({}, false, that);
                 }
               };
             }
@@ -64,10 +66,10 @@ function getDidClickSpec(that, index, specType) {
           }
         }
       }
-      that.goodsSpecMap.specOneName = state.gld.specOneName + " 已选择“" + specOneItem.specOne + "”";
+      that.goodsSpecMap.specOneName = state.gld.specOneName + " 已选择“" + specOneItem.color + "”";
     } else {
       that.goodsSpecMap.specOneName = state.gld.specOneName;
-      setPurchaseGoods({}, false, that);
+      getPurchaseGoods({}, false, that);
       for (let i = 0; i < that.goodsSpecMap.specTwoList.length; i++) {
         let item = that.goodsSpecMap.specTwoList[i];
         item.notChoose = false;
@@ -94,12 +96,12 @@ function getDidClickSpec(that, index, specType) {
     if (specTwoItem.isSelected) { //选中规格2
       let specOneList = that.goodsSpecMap.specOneList;
       if (specOneList.length == 0) { //如果规格1数组为0直接设置规格2为购买商品
-        setPurchaseGoods(specTwoItem, false, that);
+        getPurchaseGoods(specTwoItem, false, that);
       }
       for (let i = 0; i < specOneList.length; i++) {
         let specOneItem = specOneList[i];
         if (specTwoItem.specOneList.length == 0) { //如果规格1数组为0，则规格1全部为不可选状态
-          setPurchaseGoods(specTwoItem, false, that);
+          getPurchaseGoods(specTwoItem, false, that);
           specOneItem.notChoose = true;
           if (specOneItem.isSelected) {
             specOneItem.isSelected = false;
@@ -108,14 +110,14 @@ function getDidClickSpec(that, index, specType) {
           let tempSpecOne = "";
           for (let j = 0; j < specTwoItem.specOneList.length; j++) { //筛选出可选的规格1
             let tempItem = specTwoItem.specOneList[j];
-            if (tempItem.specOne == specOneItem.specOne) {
-              tempSpecOne = specTwoItem.specOne;
+            if (tempItem.color == specOneItem.color) {
+              tempSpecOne = specTwoItem.color;
               specOneItem.notChoose = false;
               if (specOneItem.isSelected) {
                 for (let k in specOneItem.specTwoList) {
                   let tempSpecTwo = specOneItem.specTwoList[k];
-                  if (tempSpecTwo.specTwo == specTwoItem.specTwo) {
-                    setPurchaseGoods(tempSpecTwo, false, that);
+                  if (tempSpecTwo.size == specTwoItem.size) {
+                    getPurchaseGoods(tempSpecTwo, false, that);
                   }
                 }
               }
@@ -125,24 +127,22 @@ function getDidClickSpec(that, index, specType) {
             specOneItem.notChoose = true;
             if (specOneItem.isSelected) {
               specOneItem.isSelected = false;
-              setPurchaseGoods({}, false, that);
+              getPurchaseGoods({}, false, that);
             }
           }
         }
       }
-      that.goodsSpecMap.specTwoName = state.gld.specTwoName + " 已选择“" + specTwoItem.specTwo + "”";
+      that.goodsSpecMap.specTwoName = state.gld.specTwoName + " 已选择“" + specTwoItem.size + "”";
     } else {
       that.goodsSpecMap.specTwoName = state.gld.specTwoName;
-      setPurchaseGoods({}, false, that);
+      getPurchaseGoods({}, false, that);
       for (let i = 0; i < that.goodsSpecMap.specOneList.length; i++) {
         let item = that.goodsSpecMap.specOneList[i];
         item.notChoose = false;
       }
     }
   }
-  setPurchaseGoods(that.purchaseGoods, false, that);
-
-	that.goodsSpecMap = that.goodsSpecMap;
+  getPurchaseGoods(that.purchaseGoods, false, that);
 };
 /*
  * 显示购物车弹框
@@ -289,7 +289,7 @@ function setPurchaseGoods(purchaseGoods, initialize, that) {
   console.log('选中的商品', purchaseGoods);
   purchaseGoods = purchaseGoods || {};
   that.organizationGoods = that.organizationGoods || {};
-  if (purchaseGoods.goodsSpecId) {
+  if (purchaseGoods.id) {
     getBuyResult(purchaseGoods);
     //如果设置的数量大于等于总库存，直接设置购买数量为最大库存
     if (that.quantity >= that.purchaseGoods.totalStock) { 
@@ -408,6 +408,8 @@ function setPurchaseGoods(purchaseGoods, initialize, that) {
     }
     that.purchaseGoods = resultItem;
   };
+	console.log(that.purchaseGoods);
+	// that.purchaseGoods = that.purchaseGoods;
   // that.setData({
   //   purchaseGoods: that.purchaseGoods,
   //   quantity: that.quantity
@@ -560,10 +562,194 @@ function formatAmount(value) {
   };
 };
 
+/** // 抖音
+ * @param {Object} that 调用的页面
+ * @param {Object} res 当前商品对象
+ * @param {Boole} itemType 页面的调用类型
+ */
+function disposeGoodsSpec(that, res, itemType) {
+	res = res || {};
+	let goodsSpecList = res.specs;
+	that.goodsSpecMap.specOneList = [];
+	that.goodsSpecMap.specTwoList = [];
+	let tempGoodsSpec = {};
+	// 临时规格2map，有标记是否存在相同规格2
+	let tempGoodsSpecTwo = {};
+	for (let goodsSpec of goodsSpecList) {
+		goodsSpec.brandId = res.brandId; // 品牌ID
+		//筛选显示的规格1，如果之前没有存在该规格1，则把该规格添加到规格1数组
+		if (!tempGoodsSpec[goodsSpec.color] && goodsSpec.color) {
+		  tempGoodsSpec[goodsSpec.color] = goodsSpec.color;
+		  let specOne = that.getSpecObj(goodsSpec);
+		  specOne.length = specOne.color.length;
+		  if (specOne.size) { //双规格
+		    specOne.id = false;
+		    specOne.specTwoList = [];
+		    for (let item of goodsSpecList) { //记录规格1中包含的所有的规格2
+		      if (item.color == specOne.color) {
+		        specOne.specTwoList.push(item);
+		      }
+		    };
+		  } else { //只有规格1
+		    if (specOne.stock <= 0) {
+		      specOne.notChoose = true;
+		    }
+		    specOne.specTwoList = [];
+		  };
+		  that.goodsSpecMap.specOneList.push(specOne);
+		}
+		// 筛选显示的规格2，如果之前没有存在该规格2，则把该规格添加到规格2数组
+		if (!tempGoodsSpecTwo[goodsSpec.size] && goodsSpec.size) {
+		  tempGoodsSpecTwo[goodsSpec.size] = goodsSpec.size;
+		  let specTwo = that.getSpecObj(goodsSpec);
+		
+		  specTwo.length = specTwo.size.length;
+		  if (specTwo.color) { //双规格
+		    specTwo.specOneList = [];
+		    for (let item of goodsSpecList) { //记录规格2中包含的所有的规格1
+		      if (item.size == specTwo.size) {
+		        specTwo.specOneList.push(item);
+		      }
+		    }
+		  } else { //只有规格2
+		    if (specTwo.stock <= 0) {
+		      specTwo.notChoose = true;
+		    }
+		    specTwo.specOneList = [];
+		  };
+		  that.goodsSpecMap.specTwoList.push(specTwo);
+		}
+	}
+	if (itemType) { //如果是列表使用
+	  // 组织商品无法作为购买商品下单,所以置空
+	 //  organizationGoods.goodsSpecId = false;
+		// that.organizationGoods = organizationGoods;
+		// that.imageList = res.resultData.imageList;
+	 //  setPurchaseGoods(that.organizationGoods, true, that);
+	}else{
+	  getPurchaseGoods({}, true, that);
+	};
+}
+/** 获得购买商品的信息 抖音
+ * @param {Object} 选中的商品item
+ * @param {Boole} initialize 第一次加载
+ */
+function getPurchaseGoods(purchaseGoods, initialize, that) {
+	console.log('获得选中购买商品的信息', purchaseGoods);
+	purchaseGoods = purchaseGoods || {};
+	if (purchaseGoods.id) {
+	  getBuyResult(purchaseGoods);
+	  //如果设置的数量大于等于总库存，直接设置购买数量为最大库存
+	  if (that.quantity >= that.purchaseGoods.stock) { 
+	    that.quantity = that.purchaseGoods.stock;
+	  }
+	} else {
+	  that.purchaseGoods = {};
+	  that.quantity = 1;
+	};
+	
+	if (initialize) { //数据刚请求回来
+	  let specOneListLength = that.goodsSpecMap.specOneList.length;
+	  let specTwoListLength = that.goodsSpecMap.specTwoList.length;
+	  if (specOneListLength == 1 && specTwoListLength == 1) { //规格2和规格1数组只有一个的情况
+	    let specOneItem = that.goodsSpecMap.specOneList[0];
+	    let specTwoItem = that.goodsSpecMap.specTwoList[0];
+	    if (specTwoItem.stock > 0) {
+	      specTwoItem.isSelected = true;
+	      specOneItem.isSelected = true;
+	      getBuyResult(specTwoItem);
+	    }
+	  } else if (specOneListLength == 1 && !specTwoListLength) { //规格1数组只有一个对象，规格2数组为0的情况
+	    let specOneItem = that.goodsSpecMap.specOneList[0];
+	    if (specOneItem.stock > 0) {
+	      specOneItem.isSelected = true;
+	      getBuyResult(specOneItem);
+	    }
+	  } else if (!specOneListLength && specTwoListLength == 1) { //规格2数组只有一个对象，规格1数组为0的情况
+	    let specTwoItem = that.goodsSpecMap.specTwoList[0];
+	    if (specTwoItem.stock > 0) {
+	      specTwoItem.isSelected = true;
+	      getBuyResult(specTwoItem);
+	    }
+	  }  else if (specOneListLength > 1 && specTwoListLength > 1) { //两个规格数组都大于1的情况（多色多码）
+			let specOneItem = that.goodsSpecMap.specOneList[0] || {};
+			if (specOneItem.stock > 0) {
+			  getBuyResult(specOneItem);
+			}
+	  } else if (specOneListLength > 1 && specTwoListLength == 1) { //规格1数组大于1规格2数组只有1个的情况
+	    let specTwoItem = that.goodsSpecMap.specTwoList[0] || {};
+	    let specOneItem = that.goodsSpecMap.specOneList[0] || {};
+	    if (specTwoItem.stock > 0) {
+	      specTwoItem.isSelected = true;
+	      specOneItem.isSelected = true;
+	      that.onASpecOneItemIndex = 0;
+	      that.onASpecTwoItemIndex = 0;
+	      getBuyResult(specTwoItem);
+	    }
+	  } else if (specOneListLength == 1 && specTwoListLength > 1) { //规格2数组大于1规格1数组只有1个的情况
+	    let specTwoList = that.goodsSpecMap.specTwoList;
+	    let specOneItem = that.goodsSpecMap.specOneList[0] || {};
+	    specOneItem.isSelected = true;
+	    that.onASpecOneItemIndex = 0;
+	    getBuyResult(specOneItem);
+	    for (let specTwoItem of specTwoList) {
+	      let tempSpecTwo = "";
+	      for (let tempItem of specOneItem.specTwoList) { //遍历规格1包含的规格2
+	        if (tempItem.size == specTwoItem.size) {
+	          tempSpecTwo = specTwoItem.size;
+	          if (tempItem.stock > 0) { //库存大于0该规格才可选
+	            specTwoItem.notChoose = false;
+	          } else { //库存小于等于0该规格为不可选状态
+	            specTwoItem.notChoose = true;
+	          };
+	        }
+	      }
+	      if (!tempSpecTwo.length) {
+	        specTwoItem.notChoose = true;
+	      }
+	    };
+	  }
+	  
+	  if (that.purchaseGoods.id) {
+	    that.goodsSpecMap.specOneName = state.gld.specOneName + " 已选择“" + that.purchaseGoods.color || '' + "”";
+	    that.goodsSpecMap.specTwoName = state.gld.specTwoName + " 已选择“" + that.purchaseGoods.size || '' + "”";
+	  }else{
+	    if (that.purchaseGoods.color){
+	      that.goodsSpecMap.specOneName = state.gld.specOneName;
+	    }
+			if (that.purchaseGoods.size) {
+				that.goodsSpecMap.specTwoName = state.gld.specTwoName ;
+			}
+	  }
+	}
+	
+	if (that.purchaseGoods && that.purchaseGoods.id) {
+		that.purchaseGoods.brandPrice = formatAmount(that.purchaseGoods.brandPrice);
+		that.purchaseGoods.costPrice = formatAmount(that.purchaseGoods.costPrice);
+		that.purchaseGoods.lowestPrice = formatAmount(that.purchaseGoods.lowestPrice);
+		that.purchaseGoods.topPrice = formatAmount(that.purchaseGoods.topPrice);
+		that.purchaseGoods.supplyPrice = formatAmount(that.purchaseGoods.supplyPrice);
+		that.purchaseGoods.stock = that.purchaseGoods.stock;
+	} else {
+	  that.purchaseGoods.brandPrice = formatAmount(that.defaultPurchaseGoods.brandPrice);
+	  that.purchaseGoods.costPrice = formatAmount(that.defaultPurchaseGoods.costPrice);
+	  that.purchaseGoods.lowestPrice = formatAmount(that.defaultPurchaseGoods.lowestPrice);
+	  that.purchaseGoods.topPrice = formatAmount(that.defaultPurchaseGoods.topPrice);
+	  that.purchaseGoods.supplyPrice = formatAmount(that.defaultPurchaseGoods.supplyPrice);
+	  that.purchaseGoods.stock = that.defaultPurchaseGoods.stock;
+	};
+	
+	function getBuyResult(resultItem) {
+	  that.purchaseGoods = resultItem;
+	};
+	console.log('处理过的选中购买商品的信息', that.purchaseGoods);
+}
 export {
   getDidClickSpec,
   setPurchaseGoods,
   setShopModalStatus,
   keepTap,
-  dealGoodsSpec
+  dealGoodsSpec,
+	
+	disposeGoodsSpec
 };

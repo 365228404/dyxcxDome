@@ -18,8 +18,8 @@
 				<view v-for="(item, index) in groupGoodsList" :key="index" class='goodsItem bgf' @click='goodsDetail(item)'>
 					<view class='goodsItem_imgBox'>
 						<image class='goodsItem_img' mode='aspectFill' :src="item.filesPath | fiterImgUrl" lazy-load></image>
-						<view class='sold_out_goods' v-if="item.isSoldOut"></view>
-						<view class="sold_out_btn btn_darkgrey fz11" v-if="item.isSoldOut">已售罄</view>
+						<view class='sold_out_goods' v-if="item.isSoldOut || item.isSellOut"></view>
+						<view class="sold_out_btn btn_darkgrey fz11" v-if="item.isSoldOut || item.isSellOut">{{item.isSellOut?'已售罄':'已下架'}}</view>
 					</view>
 					<view class='goods_bottom'>
 						<view class='goods_name'>{{item.name}}</view>
@@ -28,7 +28,7 @@
 								<view class='c_FD7D6F mr10'>
 									<text class='fz16 b'>￥{{item.supplyPrice | toFixedNum}}</text>
 								</view>
-								<view class='t_line fz12 c_grey3'>￥{{item.topPrice | toFixedNum}}</view>
+								<view class='t_line fz12 c_grey3'>￥{{item.brandPrice | toFixedNum}}</view>
 							</view>
 						</view>
 						<view class='sales_box bg_FFF5CA'>
@@ -138,7 +138,7 @@
 			// 店铺商品列表
 			ProductManagerList(onPullDown) {
 				let that = this;
-				let pageNumber = onPullDown? 1 : ((this.storeGoodsList.length/this.pageSize)+1);
+				let pageNumber = onPullDown? 1 : ((this.groupGoodsList.length/this.pageSize)+1);
 				this.util.sendPost({
 					url: this.config.ProductManagerList,
 					method: 'POST',
@@ -156,10 +156,11 @@
 							item.specs = item.specs || [{}];
 							item.filesPath = item.photos[0].filesPath || '';
 							item.supplyPrice = item.specs[0].supplyPrice;
-							item.topPrice = item.specs[0].topPrice;
+							item.brandPrice = item.specs[0].brandPrice;
 							item.makePrice = item.specs[0].lowestPrice - item.specs[0].supplyPrice;
-							item.isSoldOut = item.specs.every(item=>item.stock==0); // 是否售罄
-							item.isSellOut = false; //是否下架
+							item.isSellOut = item.specs.every(item=>item.stock==0); // 是否售罄
+							// item.isSellOut = true; // 是否售罄
+							item.isSoldOut = false; //是否下架
 						})
 						
 						if (groupGoodsList.length < that.pageSize) { //如果返回的数据小于分页长度表示没有更多数据了

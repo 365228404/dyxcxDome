@@ -6,7 +6,7 @@
 			<view class="income_card">
 				<image class="maxBox" src="../../static/icon_money_card.png"></image>
 				<view class="card_box cf">
-					<view class="flex_s fz13">
+					<view class="flex_s fz13 pt40" @click="goIncomeDetails">
 						<view>余额 (元)</view>
 						<view class="flexbox">
 							<view class="mr10">账户明细</view>
@@ -20,7 +20,7 @@
 							<view class="fz16 pt16">￥</view>
 							<view class="fz28 b500">88.88</view>
 						</view>
-						<view class="btn_money bgf c_FD7D6F">
+						<view class="btn_money bgf c_FD7D6F" @click="goBalance">
 							提现
 						</view>
 					</view>
@@ -136,7 +136,16 @@
 
 		},
 		methods: {
-			
+			goIncomeDetails() {
+				uni.navigateTo({
+					url:'../IncomeDetails/IncomeDetails'
+				})
+			},
+			goBalance() {
+				uni.navigateTo({
+					url:'../balance/balance'
+				})
+			}
 		}
 	}
 </script>
@@ -154,7 +163,7 @@
 		right: 0;
 		bottom: 0;
 		top: 0;
-		padding: 78rpx 56rpx 66rpx;
+		padding: 38rpx 56rpx 66rpx;
 	}
 	.btn_money {
 		padding: 16rpx 54rpx;

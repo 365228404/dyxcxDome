@@ -17,7 +17,7 @@
 						</view>
 					</view>
 				</view>
-				<view class="black_title flex_s c_CA9E5D fz15 b600">
+				<view class="black_title flex_s c_CA9E5D fz15 b600" @click="goMyIncome">
 					<view>我的钱包</view>
 					<view class="flex_c">
 						<view>￥888.88</view>
@@ -66,21 +66,21 @@
 					<view class="c_333 b500 fz15">我的服务</view>
 				</view>
 				<view class="h1 bg_DEDEDE ml30 mr30"></view>
-				<view class="flex_sc pd30">
+				<view class="flex_sc pd30" @click="goShoppingCart">
 					<view class="c_666 b400 fz14">购物车</view>
 					<view>
 						<image class="img20" src="../../static/image/mine/icon_arrow_right_gray.png"></image>
 					</view>
 				</view>
 				<view class="h1 bg_DEDEDE ml30 mr30"></view>
-				<view class="flex_sc pd30">
+				<view class="flex_sc pd30" @click="goService">
 					<view class="c_666 b400 fz14">联系客服</view>
 					<view>
 						<image class="img20" src="../../static/image/mine/icon_arrow_right_gray.png"></image>
 					</view>
 				</view>
 				<view class="h1 bg_DEDEDE ml30 mr30"></view>
-				<view class="flex_sc pd30">
+				<view class="flex_sc pd30" @click="goSetting">
 					<view class="c_666 b400 fz14">设置</view>
 					<view>
 						<image class="img20" src="../../static/image/mine/icon_arrow_right_gray.png"></image>
@@ -150,12 +150,10 @@
 			},
 			//我的订单
 			order(index) {
-				// if (this.join()) {
-				// 	let orderIndex = index || 0;
-				// 	uni.navigateTo({
-				// 		url: "../order/order?index=" + orderIndex
-				// 	})
-				// }
+				let orderIndex = index || 0;
+				uni.navigateTo({
+					url: "../order/order?index=" + orderIndex
+				})
 			},
 			authSuccess() {
 				this.getData(this.options);
@@ -169,6 +167,25 @@
 					return false;
 				}
 				return true;
+			},
+			// 去我的钱包
+			goMyIncome() {
+				uni.navigateTo({
+					url:'../myIncome/myIncome'
+				})
+			},
+			goShoppingCart() {
+				uni.navigateTo({
+					url:'../shoppingCart/shoppingCart'
+				})
+			},
+			goSetting() {
+				uni.navigateTo({
+					url:'../setting/setting'
+				})
+			},
+			goService() {
+				this.util.showToast(this, '功能待开发');
 			}
 		}
 	}

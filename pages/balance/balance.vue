@@ -39,7 +39,7 @@
 				</view>
 			</view>
 			
-			<view class="btn_main btn_main_theme mt40 fz14">确认提现</view>
+			<view class="btn_main btn_main_theme mt40 fz14" @click="showDialogPassword">确认提现</view>
 			<view class="btn_main btn_darkgrey mt40 fz14" @click="showDialogPassword" >确认提现</view>
 		</view>
 		

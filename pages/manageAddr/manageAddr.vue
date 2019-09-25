@@ -269,7 +269,7 @@
 							weiXinAddress: param,
 							needRefresh: true
 						})
-						// uni.navigateBack();
+						uni.navigateBack();
 					}
 				})
 			},
